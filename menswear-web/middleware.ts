@@ -10,6 +10,14 @@ export function middleware(req: NextRequest) {
     try { return new URL(apiBase).origin } catch { return 'http://localhost:5252' }
   })()
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseOrigin = (() => {
+    try { return supabaseUrl ? new URL(supabaseUrl).origin : '' } catch { return '' }
+  })()
+
+  const connectSources = ["'self'", apiOrigin]
+  if (supabaseOrigin) connectSources.push(supabaseOrigin)
+
   const cspParts = [
     "default-src 'self'",
     // Allow runtime scripts and styles from self only
@@ -22,7 +30,7 @@ export function middleware(req: NextRequest) {
     // Media none
     "media-src 'self'",
     // XHR/fetch to API
-    `connect-src 'self' ${apiOrigin}`,
+    `connect-src ${connectSources.join(' ')}`,
     // Frames none
     "frame-src 'none'",
     // Workers, objects
