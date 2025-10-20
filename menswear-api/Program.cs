@@ -52,6 +52,9 @@ builder.Services.AddCors(options =>
                 if (string.IsNullOrWhiteSpace(origin)) return false;
                 if (origin.StartsWith("http://localhost:")) return true;
                 if (origin.Equals("https://localhost:3000", StringComparison.OrdinalIgnoreCase)) return true;
+                // Allow Capacitor/Ionic Android WebView origins
+                if (origin.StartsWith("capacitor://", StringComparison.OrdinalIgnoreCase)) return true;
+                if (origin.StartsWith("ionic://", StringComparison.OrdinalIgnoreCase)) return true;
 
                 if (!string.IsNullOrWhiteSpace(frontendOrigin) &&
                     origin.Equals(frontendOrigin, StringComparison.OrdinalIgnoreCase)) return true;

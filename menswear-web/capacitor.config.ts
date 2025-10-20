@@ -5,10 +5,12 @@ const isDev = process.env.NODE_ENV !== 'production'
 const config: CapacitorConfig = {
   appId: 'com.leonatelier.app',
   appName: 'Leon Atelier',
-  webDir: 'out', // next export output
+  webDir: 'out',
   bundledWebRuntime: false,
-  // In development, load from the Next.js dev server. On Android emulator, host is 10.0.2.2
-  server: isDev ? { url: 'http://10.0.2.2:3000', cleartext: true } : undefined,
+  // Dev: Next.js on host (emulator uses 10.0.2.2). Prod: load deployed site.
+  server: isDev
+    ? { url: 'http://10.0.2.2:3000', cleartext: true }
+    : { url: 'https://leonatelier.netlify.app' },
   android: {
     allowMixedContent: false,
   },
