@@ -140,7 +140,7 @@ public class AuthController : ControllerBase
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
         if (!string.Equals(env, "Development", StringComparison.OrdinalIgnoreCase))
             return NotFound();
-        var e = (email ?? string.Empty).trim().ToLowerInvariant();
+        var e = (email ?? string.Empty).Trim().ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(e)) return BadRequest(new { error = "Missing email" });
         var user = await _db.UsersApp.AsNoTracking().FirstOrDefaultAsync(u => u.Email == e);
         if (user is null) return NotFound();
