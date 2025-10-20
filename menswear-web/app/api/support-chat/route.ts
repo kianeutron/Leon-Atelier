@@ -4,7 +4,7 @@ const GEMINI_KEY = process.env.GEMINI_API_KEY
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json() as { messages: { role: string; content: string }[] }
+    const { messages } = await req.json() as { messages: { role: 'user' | 'assistant'; content: string }[] }
     const system = `You are a helpful store assistant for a menswear shop called Léon Atelier.
 Answer succinctly about products, sizing, materials, shipping and returns.
 If you don't know, say you don't know and suggest visiting /products or contacting support.`
@@ -12,39 +12,57 @@ If you don't know, say you don't know and suggest visiting /products or contacti
     // 1) Try Gemini first if configured
     if (GEMINI_KEY) {
       try {
-        const lastUser = messages?.slice().reverse().find(m => m.role === 'user')?.content || ''
-        const body = {
-          contents: [
-            { role: 'user', parts: [{ text: `${system}\n\nUser: ${lastUser}\nAssistant:` }] }
-          ]
+        const contents: any[] = []
+        // prepend system instruction
+        contents.push({ role: 'user', parts: [{ text: system }] })
+        // include history (map assistant->model, user->user)
+        for (const m of messages || []) {
+          const role = m.role === 'assistant' ? 'model' : 'user'
+          contents.push({ role, parts: [{ text: m.content }] })
         }
+
+        const body = { contents }
         const models = [
+          // Prefer widely-available stable models first
+          'gemini-1.5-flash',
+          'gemini-1.5-pro',
+          // Then try newer ones if available
+          'gemini-2.0-flash',
           'gemini-2.5-flash',
           'gemini-2.5-pro',
-          'gemini-2.0-flash',
         ]
-        for (const m of models) {
-          let ok = false
-          for (let attempt = 0; attempt < 2; attempt++) {
-            const url = `https://generativelanguage.googleapis.com/v1/models/${m}:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`
-            const r = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(body),
-              cache: 'no-store',
-            })
-            if (r.ok) {
-              const data: any = await r.json().catch(() => null)
-              const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || ''
-              if (text.trim()) return NextResponse.json({ reply: text.trim(), diag: `(model=${m}, status=200)` })
-              ok = true
-              break
+        const bases = [
+          'https://generativelanguage.googleapis.com/v1',
+          'https://generativelanguage.googleapis.com/v1beta',
+        ]
+        const attempts: string[] = []
+        for (const base of bases) {
+          for (const m of models) {
+            for (let attempt = 0; attempt < 2; attempt++) {
+              const url = `${base}/models/${m}:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`
+              const r = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+                cache: 'no-store',
+              })
+              attempts.push(`${m}@${base.split('/').pop()}=${r.status}`)
+              if (r.ok) {
+                const data: any = await r.json().catch(() => null)
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+                if (text) return NextResponse.json({ reply: text, diag: `(model=${m}, base=${base.includes('v1beta')?'v1beta':'v1'}, status=200)` })
+                // successful but empty
+                break
+              }
+              await new Promise(res => setTimeout(res, 600))
             }
-            await new Promise(res => setTimeout(res, 800))
           }
-          if (ok) break
         }
-      } catch { /* proceed to FAQ */ }
+        // If we reach here, Gemini didn't yield a usable reply
+        console.warn('[support-chat] Gemini attempts:', attempts.join(', '))
+      } catch (e) {
+        console.warn('[support-chat] Gemini error:', (e as Error)?.message)
+      }
     }
 
     // 2) Fallback to local FAQ if no key or provider fails
@@ -65,8 +83,8 @@ If you don't know, say you don't know and suggest visiting /products or contacti
     } else {
       faq = 'How can I help? I can answer about returns (30 days), shipping (3–6 days), sizing, and materials. For product availability, tell me the product name.'
     }
-    return NextResponse.json({ reply: faq, diag: '(model=faq, status=200)' })
-  } catch {
-    return NextResponse.json({ reply: 'Sorry, something went wrong. Please try again.', diag: '(model=error, status=500)' })
+    return NextResponse.json({ reply: faq, diag: `(model=faq, status=200, gemini=${GEMINI_KEY?'configured':'missing'})` })
+  } catch (e) {
+    return NextResponse.json({ reply: 'Sorry, something went wrong. Please try again.', diag: `(model=error, status=500, err=${(e as Error)?.message||'unknown'})` })
   }
 }
