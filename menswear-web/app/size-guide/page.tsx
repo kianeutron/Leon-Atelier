@@ -4,6 +4,7 @@ import type { Category } from '../../lib/types'
 
 function buildMatrixForCategory(cat: Category) {
   const slug = (cat.Slug || '').toLowerCase()
+  const name = (cat.Name || '').toLowerCase()
   if (slug === 'tops') {
     return {
       sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -34,6 +35,32 @@ function buildMatrixForCategory(cat: Category) {
         { label: 'Shoulder (cm)', values: ['43', '45', '47', '49', '51'] },
         { label: 'Length (cm)', values: ['69', '71', '73', '75', '77'] },
         { label: 'Sleeve (cm)', values: ['62', '63', '64', '65', '66'] },
+      ],
+    }
+  }
+  // Knitwear (cashmere and wool knits)
+  if (slug.includes('knit') || name.includes('knit')) {
+    return {
+      sizes: ['XS', 'S', 'M', 'L', 'XL'],
+      measurements: [
+        { label: 'Chest (cm)', values: ['88', '94', '100', '106', '112'] },
+        { label: 'Shoulder (cm)', values: ['41', '43', '45', '47', '49'] },
+        { label: 'Length (cm)', values: ['65', '67', '69', '71', '73'] },
+        { label: 'Sleeve (cm)', values: ['60', '61', '62', '63', '64'] },
+      ],
+    }
+  }
+  // Footwear (leather shoes & boots)
+  if (
+    slug.includes('foot') || slug.includes('shoe') || slug.includes('boot') ||
+    name.includes('footwear') || name.includes('shoe') || name.includes('boots')
+  ) {
+    return {
+      sizes: ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45'],
+      measurements: [
+        { label: 'US', values: ['7', '8', '9', '10', '11', '12'] },
+        { label: 'UK', values: ['6', '7', '8', '9', '10', '11'] },
+        { label: 'Foot length (cm)', values: ['25.4', '26.0', '26.7', '27.3', '28.0', '28.6'] },
       ],
     }
   }
