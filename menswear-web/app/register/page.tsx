@@ -20,6 +20,10 @@ export default function RegisterPage() {
   const [resendMsg, setResendMsg] = useState<string | null>(null)
   const router = useRouter()
 
+  // Stable site URL for auth email redirects (falls back to runtime origin in browser)
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL && process.env.NEXT_PUBLIC_SITE_URL.trim())
+    || (typeof window !== 'undefined' ? window.location.origin : '')
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
@@ -36,7 +40,7 @@ export default function RegisterPage() {
         password,
         options: {
           data: { first_name: firstName || null, last_name: lastName || null },
-          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined,
+          emailRedirectTo: siteUrl ? `${siteUrl}/login` : undefined,
         },
       })
       if (err) {
@@ -133,7 +137,11 @@ export default function RegisterPage() {
                   setResendMsg(null)
                   setResendLoading(true)
                   try {
-                    const { error: rerr } = await supabase.auth.resend({ type: 'signup', email })
+                    const { error: rerr } = await supabase.auth.resend({
+                      type: 'signup',
+                      email,
+                      options: { emailRedirectTo: siteUrl ? `${siteUrl}/login` : undefined }
+                    })
                     if (rerr) throw new Error(rerr.message || 'Could not resend email')
                     setResendMsg('Verification email resent. Please check your inbox (and spam).')
                   } catch (e:any) {
