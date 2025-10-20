@@ -7,7 +7,7 @@ import { HeaderClient } from './HeaderClient'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { supabase } from '../lib/supabaseClient'
+import { getUser } from '../lib/authClient'
 
 export function SiteHeader() {
   const pathname = usePathname()
@@ -24,11 +24,10 @@ export function SiteHeader() {
   }, [])
 
   useEffect(() => {
-    // Check Supabase session and set target for account icon when route changes (e.g., after login)
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) setAccountHref('/account')
-      else setAccountHref('/register')
-    }).catch(() => setAccountHref('/register'))
+    try {
+      const u = getUser()
+      setAccountHref(u ? '/account' : '/register')
+    } catch { setAccountHref('/register') }
   }, [pathname])
 
   const nav = [
@@ -96,8 +95,8 @@ export function SiteHeader() {
             className="hidden sm:inline-flex rounded-md p-2 hover:bg-sand/50 transition"
             onClick={async (e) => {
               e.preventDefault()
-              const { data } = await supabase.auth.getSession()
-              router.push(data.session?.user ? '/account' : '/register')
+              const u = getUser()
+              router.push(u ? '/account' : '/register')
             }}
           >
             <User size={18} />
@@ -139,9 +138,9 @@ export function SiteHeader() {
               </Link>
               <button
                 onClick={async () => {
-                  const { data } = await supabase.auth.getSession()
+                  const u = getUser()
                   setOpen(false)
-                  router.push(data.session?.user ? '/account' : '/register')
+                  router.push(u ? '/account' : '/register')
                 }}
                 className="rounded-md px-3 py-3 text-brown hover:bg-sand/40 inline-flex items-center gap-2"
                 aria-label="Account"

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { logout as apiLogout } from '../lib/authClient'
 
 export function LogoutButton() {
   const router = useRouter()
@@ -11,7 +11,7 @@ export function LogoutButton() {
   async function onLogout() {
     try {
       setLoading(true)
-      await supabase.auth.signOut()
+      await apiLogout()
       router.push('/login')
     } catch {
       router.refresh()

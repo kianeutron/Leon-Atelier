@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabaseClient'
+import { register as apiRegister, login as apiLogin } from '../../lib/authClient'
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('')
@@ -16,13 +16,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [resendLoading, setResendLoading] = useState(false)
-  const [resendMsg, setResendMsg] = useState<string | null>(null)
+  // no email verification flow
   const router = useRouter()
 
-  // Stable site URL for auth email redirects (falls back to runtime origin in browser)
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL && process.env.NEXT_PUBLIC_SITE_URL.trim())
-    || (typeof window !== 'undefined' ? window.location.origin : '')
+  // no redirect emails needed
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,23 +32,12 @@ export default function RegisterPage() {
       if (password.length < 6) throw new Error('Password must be at least 6 characters')
       if (password !== confirmPassword) throw new Error('Passwords do not match')
 
-      const { data, error: err } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { first_name: firstName || null, last_name: lastName || null },
-          emailRedirectTo: siteUrl ? `${siteUrl}/login` : undefined,
-        },
-      })
-      if (err) {
-        if (err.message?.toLowerCase().includes('already registered')) {
-          setError('Email already registered. Please sign in or use another email.')
-        } else {
-          setError(err.message || 'Register failed')
-        }
-        return
-      }
+      await apiRegister({ email, password, firstName, lastName })
+      // auto-login then go to account
+      await apiLogin(email, password)
       setSuccess(true)
+      router.push('/account')
+      setTimeout(() => router.refresh(), 0)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -122,42 +108,14 @@ export default function RegisterPage() {
             I agree to the Terms and Privacy Policy.
           </label>
           {error && <div className="text-red-600 text-sm">{error}</div>}
-          {success && <div className="text-emerald-700 text-sm">Account created successfully. Please check your email for a verification link to activate your account.</div>}
+          {success && <div className="text-emerald-700 text-sm">Account created successfully.</div>}
           <div className="flex items-center gap-3">
             <button disabled={loading || success} className="flex-1 bg-brown text-cream px-4 py-2 rounded-md hover:opacity-95 disabled:opacity-60">
               {loading ? 'Creating...' : 'Create account'}
             </button>
             <button type="button" disabled={success} onClick={()=>router.push('/login')} className="px-4 py-2 border border-brown text-brown rounded-md hover:bg-sand/60 disabled:opacity-60">Sign in</button>
           </div>
-          {success && (
-            <div className="mt-4 space-y-2">
-              <button
-                type="button"
-                onClick={async ()=>{
-                  setResendMsg(null)
-                  setResendLoading(true)
-                  try {
-                    const { error: rerr } = await supabase.auth.resend({
-                      type: 'signup',
-                      email,
-                      options: { emailRedirectTo: siteUrl ? `${siteUrl}/login` : undefined }
-                    })
-                    if (rerr) throw new Error(rerr.message || 'Could not resend email')
-                    setResendMsg('Verification email resent. Please check your inbox (and spam).')
-                  } catch (e:any) {
-                    setResendMsg(e.message)
-                  } finally {
-                    setResendLoading(false)
-                  }
-                }}
-                disabled={resendLoading}
-                className="w-full px-4 py-2 rounded-md border border-brown text-brown hover:bg-sand/60 disabled:opacity-60"
-              >
-                {resendLoading ? 'Resending…' : 'Resend verification email'}
-              </button>
-              {resendMsg && <div className="text-sm text-brown/80">{resendMsg}</div>}
-            </div>
-          )}
+          {/* no verification resend UI */}
         </form>
       </div>
     </div>

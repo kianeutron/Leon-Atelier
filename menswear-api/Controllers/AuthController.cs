@@ -109,8 +109,7 @@ public class AuthController : ControllerBase
             if (exists) return Conflict(new { error = "Email already registered" });
 
             var (saltHex, hashHex, iterations) = HashPassword(dto.Password);
-            var tokenBytes = RandomNumberGenerator.GetBytes(32);
-            var verifyToken = Convert.ToHexString(tokenBytes);
+            // Email verification disabled: skip issuing verification token
 
             var user = new UserApp
             {
@@ -119,24 +118,16 @@ public class AuthController : ControllerBase
                 FirstName = string.IsNullOrWhiteSpace(dto.FirstName) ? null : dto.FirstName,
                 LastName = string.IsNullOrWhiteSpace(dto.LastName) ? null : dto.LastName,
                 CreatedAt = DateTime.UtcNow,
-                IsEmailVerified = false,
-                EmailVerificationToken = verifyToken,
+                // Mark as verified immediately (no email verification flow)
+                IsEmailVerified = true,
+                EmailVerifiedAt = DateTime.UtcNow,
+                EmailVerificationToken = null,
             };
             _db.UsersApp.Add(user);
             await _db.SaveChangesAsync();
 
-            // Simulate email by logging the verification URL
-            var frontendBase = _cfg["FRONTEND_BASE_URL"]
-                ?? Environment.GetEnvironmentVariable("FRONTEND_BASE_URL")
-                ?? "http://localhost:3000";
-            var verifyUrl = $"{frontendBase}/verify-email?token={verifyToken}";
-            var subject = "Verify your email - Léon Atelier";
-            var html = $"<p>Hello{(string.IsNullOrWhiteSpace(user.FirstName)?"":" "+user.FirstName)},</p><p>Thanks for creating an account at Léon Atelier. Please verify your email by clicking the link below:</p><p><a href=\"{verifyUrl}\">Verify my email</a></p><p>If the button doesn't work, copy and paste this URL into your browser:<br/>{verifyUrl}</p>";
-            try { if (_mailer != null) await _mailer.SendAsync(user.Email, subject, html); } catch { /* swallow to not leak mail errors */ }
-            Console.WriteLine($"[EmailVerification] Send verify link to {user.Email}: {verifyUrl}");
-
-            // Do not auto sign-in; ask user to verify email
-            return Ok(new { ok = true, user = new { id = user.Id, email = user.Email, firstName = user.FirstName, lastName = user.LastName }, needsVerification = true });
+            // Return success without requiring verification
+            return Ok(new { ok = true, user = new { id = user.Id, email = user.Email, firstName = user.FirstName, lastName = user.LastName }, needsVerification = false });
         }
         catch (Npgsql.PostgresException pgx) when (pgx.SqlState == "23505")
         {
@@ -163,9 +154,6 @@ public class AuthController : ControllerBase
             if (parts.Length < 3) return Unauthorized(new { error = "Invalid credentials" });
             if (!VerifyPassword(dto.Password ?? string.Empty, parts[0], parts[1], int.Parse(parts[2])))
                 return Unauthorized(new { error = "Invalid credentials" });
-
-            if (!(user.IsEmailVerified))
-                return StatusCode(403, new { error = "Email not verified. Please check your inbox for the verification link." });
 
             var token = CreateJwt(user.Id, user.Email);
             return Ok(new { ok = true, token, user = new { id = user.Id, email = user.Email, firstName = user.FirstName, lastName = user.LastName } });

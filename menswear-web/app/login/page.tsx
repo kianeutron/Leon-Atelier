@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabaseClient'
+import { login as apiLogin } from '../../lib/authClient'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -17,8 +17,7 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
     try {
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password })
-      if (err) throw new Error(err.message || 'Login failed')
+      await apiLogin(email, password)
       router.push('/')
       // Ensure the app (including header) sees the updated cookie state
       setTimeout(() => router.refresh(), 0)

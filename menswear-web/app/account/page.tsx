@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabaseClient'
 import { LogoutButton } from '../../components/LogoutButton'
+import { getUser as getLocalUser, fetchMe } from '../../lib/authClient'
 
 export default function AccountPage() {
   const router = useRouter()
@@ -12,14 +12,20 @@ export default function AccountPage() {
 
   useEffect(() => {
     let mounted = true
-    supabase.auth.getUser().then(({ data, error }) => {
-      if (!mounted) return
-      if (error || !data.user) {
-        router.replace('/login')
-        return
+    ;(async () => {
+      try {
+        const local = getLocalUser()
+        if (!local) {
+          router.replace('/login')
+          return
+        }
+        // Try to refresh from backend
+        const me = await fetchMe()
+        setUser(me || local)
+      } finally {
+        mounted && setLoading(false)
       }
-      setUser(data.user)
-    }).finally(() => mounted && setLoading(false))
+    })()
     return () => { mounted = false }
   }, [router])
 
@@ -35,9 +41,8 @@ export default function AccountPage() {
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-2xl font-semibold mb-4">My account</h1>
       <div className="grid gap-3 w-full rounded-lg border border-sand bg-cream p-4">
-        <div><span className="text-brown/70 text-sm">Name</span><div className="text-brownDark">{user?.user_metadata?.first_name ?? '-'} {user?.user_metadata?.last_name ?? ''}</div></div>
+        <div><span className="text-brown/70 text-sm">Name</span><div className="text-brownDark">{user?.firstName ?? '-'} {user?.lastName ?? ''}</div></div>
         <div><span className="text-brown/70 text-sm">Email</span><div className="text-brownDark">{user?.email}</div></div>
-        <div><span className="text-brown/70 text-sm">Verified</span><div className="text-brownDark">{user?.email_confirmed_at ? new Date(user.email_confirmed_at).toLocaleDateString() : 'Pending'}</div></div>
         <div className="pt-2">
           <LogoutButton />
         </div>
