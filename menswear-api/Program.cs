@@ -35,21 +35,41 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var frontendOrigin = builder.Configuration["FRONTEND_ORIGIN"]
     ?? Environment.GetEnvironmentVariable("FRONTEND_ORIGIN");
+var allowVercelPreviews = (builder.Configuration["ALLOW_VERCEL_PREVIEWS"]
+    ?? Environment.GetEnvironmentVariable("ALLOW_VERCEL_PREVIEWS")
+    ?? "0") == "1";
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("frontend", policy =>
     {
-        var origins = new List<string>
+        // Allow exact configured origin(s) plus localhost, and optionally any *.vercel.app preview
+        policy.SetIsOriginAllowed(origin =>
         {
-            "http://localhost:3000",
-            "https://localhost:3000"
-        };
-        if (!string.IsNullOrWhiteSpace(frontendOrigin)) origins.Add(frontendOrigin!);
-        policy.WithOrigins(origins.ToArray())
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(origin)) return false;
+                if (origin.StartsWith("http://localhost:")) return true;
+                if (origin.Equals("https://localhost:3000", StringComparison.OrdinalIgnoreCase)) return true;
+
+                if (!string.IsNullOrWhiteSpace(frontendOrigin) &&
+                    origin.Equals(frontendOrigin, StringComparison.OrdinalIgnoreCase)) return true;
+
+                if (allowVercelPreviews)
+                {
+                    if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    {
+                        var host = uri.Host;
+                        if (host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase)) return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
