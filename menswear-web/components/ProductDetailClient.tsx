@@ -121,7 +121,9 @@ export function ProductDetailClient({
                 )
               })}
             </div>
-            <button className="mt-2 text-xs text-brown underline underline-offset-4">Size guide</button>
+            <Link href="/size-guide" className="mt-2 inline-block text-xs text-brown underline underline-offset-4">
+              Size guide
+            </Link>
           </div>
 
           {/* Quantity + Add */}
