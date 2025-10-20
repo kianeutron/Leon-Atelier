@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connString = builder.Configuration.GetConnectionString("Default")
     ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default")
+    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? string.Empty;
 
 builder.Services.AddDbContext<AppDbContext>(options =>
