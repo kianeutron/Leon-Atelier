@@ -1,5 +1,9 @@
 "use client"
 
+// Force dynamic rendering to avoid prerender/export issues on this client-only page
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
