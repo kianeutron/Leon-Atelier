@@ -11,16 +11,25 @@ export default function SizeGuideTable({ matrix }: { matrix: SizeGuideMatrix }) 
           <tr className="bg-sand/40 text-brownDark">
             <th className="text-left px-3 py-2 border border-sand/60">Measurement</th>
             {matrix.sizes.map((sz) => (
-              <th key={sz} className="px-3 py-2 border border-sand/60 text-left">{sz}</th>
+              <th key={sz} className="px-3 py-2 border border-sand/60 text-left">
+                {sz}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {matrix.measurements.map((m) => (
             <tr key={m.label} className="odd:bg-cream even:bg-cream/60">
-              <td className="px-3 py-2 border border-sand/60 text-brownDark whitespace-nowrap">{m.label}</td>
+              <td className="px-3 py-2 border border-sand/60 text-brownDark whitespace-nowrap">
+                {m.label}
+              </td>
               {m.values.map((v, i) => (
-                <td key={i} className="px-3 py-2 border border-sand/60 text-brown whitespace-nowrap">{v}</td>
+                <td
+                  key={i}
+                  className="px-3 py-2 border border-sand/60 text-brown whitespace-nowrap"
+                >
+                  {v}
+                </td>
               ))}
             </tr>
           ))}

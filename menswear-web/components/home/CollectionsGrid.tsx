@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -17,11 +17,11 @@ export function CollectionsGrid() {
       try {
         const { value } = await fetchCategories({ orderby: 'Name asc' })
         if (!mounted) return
-        const filtered = value.filter(c => c.Slug !== 'tops')
+        const filtered = value.filter((c) => c.Slug !== 'tops')
         setCats(filtered)
         // fetch representative image per category in parallel
         const entries = await Promise.all(
-          filtered.map(async c => {
+          filtered.map(async (c) => {
             const { imageUrl } = await fetchCategoryCover(c.Id)
             return [c.Id, imageUrl] as const
           })
@@ -30,19 +30,29 @@ export function CollectionsGrid() {
         setCovers(Object.fromEntries(entries))
       } catch {}
     })()
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [])
 
   return (
     <section className="relative">
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(1200px_360px_at_10%_-10%,rgba(201,111,85,0.07),transparent),radial-gradient(1000px_300px_at_100%_120%,rgba(199,161,122,0.08),transparent)]" />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(1200px_360px_at_10%_-10%,rgba(201,111,85,0.07),transparent),radial-gradient(1000px_300px_at_100%_120%,rgba(199,161,122,0.08),transparent)]"
+      />
       <div className="relative mx-auto max-w-6xl px-4 py-16">
         <div className="flex items-end justify-between mb-8 gap-3 flex-wrap">
           <div>
             <h2 className="font-display text-3xl md:text-4xl text-brownDark">Shop by Category</h2>
-            <p className="mt-2 text-brown/70">Tailored picks to get you to the right aisle faster.</p>
+            <p className="mt-2 text-brown/70">
+              Tailored picks to get you to the right aisle faster.
+            </p>
           </div>
-          <Link href="/products" className="inline-flex items-center gap-2 rounded-full border border-sand bg-cream px-3 py-1.5 text-brown hover:bg-brown hover:text-cream transition">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 rounded-full border border-sand bg-cream px-3 py-1.5 text-brown hover:bg-brown hover:text-cream transition"
+          >
             View all
             <span aria-hidden>→</span>
           </Link>
@@ -76,7 +86,10 @@ export function CollectionsGrid() {
                         loading={i < 2 ? 'eager' : 'lazy'}
                       />
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent z-0" />
-                      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 z-0" style={{boxShadow:'inset 0 0 0 9999px rgba(248,243,236,0.06)'}} />
+                      <div
+                        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 z-0"
+                        style={{ boxShadow: 'inset 0 0 0 9999px rgba(248,243,236,0.06)' }}
+                      />
                       <div className="pointer-events-none absolute -inset-12 rounded-[1.25rem] bg-[radial-gradient(260px_180px_at_80%_120%,rgba(201,111,85,0.28),transparent_60%)] opacity-0 group-hover:opacity-100 transition duration-500 z-0" />
                       <div className="pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full bg-[radial-gradient(circle_at_center,rgba(201,111,85,0.22),transparent_60%)] opacity-0 group-hover:opacity-100 transition duration-500 z-0" />
                     </>
@@ -85,9 +98,13 @@ export function CollectionsGrid() {
                   {/* Title chip */}
                   <div className="absolute inset-x-3 bottom-3 flex items-end justify-between z-10">
                     <div className="inline-flex flex-col md:flex-row items-start md:items-center gap-0.5 md:gap-2 rounded-full border border-sand bg-cream/95 px-3 py-1.5 shadow-sm backdrop-blur max-w-[78%]">
-                      <span className="font-display text-brownDark text-sm md:text-base leading-snug">{loading ? ' ' : c.Name}</span>
+                      <span className="font-display text-brownDark text-sm md:text-base leading-snug">
+                        {loading ? ' ' : c.Name}
+                      </span>
                       {!loading && (
-                        <span className="hidden sm:inline text-brown/70 text-[11px] md:text-xs truncate max-w-[140px] sm:max-w-[160px] md:max-w-[200px] leading-snug">{c.Description ?? ''}</span>
+                        <span className="hidden sm:inline text-brown/70 text-[11px] md:text-xs truncate max-w-[140px] sm:max-w-[160px] md:max-w-[200px] leading-snug">
+                          {c.Description ?? ''}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -102,7 +119,10 @@ export function CollectionsGrid() {
                   )}
                 </div>
                 {/* Glow ring */}
-                <div aria-hidden className="pointer-events-none absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(201,111,85,0.25),transparent_30%,transparent_70%,rgba(201,111,85,0.25))] mix-blend-multiply" />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(201,111,85,0.25),transparent_30%,transparent_70%,rgba(201,111,85,0.25))] mix-blend-multiply"
+                />
               </motion.div>
             </Link>
           ))}
@@ -111,4 +131,3 @@ export function CollectionsGrid() {
     </section>
   )
 }
-

@@ -23,7 +23,7 @@ function readUsers(): User[] {
   try {
     const raw = fs.readFileSync(USERS_PATH, 'utf8')
     const arr = JSON.parse(raw)
-    return Array.isArray(arr) ? arr as User[] : []
+    return Array.isArray(arr) ? (arr as User[]) : []
   } catch {
     return []
   }
@@ -36,13 +36,18 @@ function writeUsers(users: User[]) {
 
 export function findUserByEmailDB(email: string): User | undefined {
   const users = readUsers()
-  return users.find(u => u.email === email)
+  return users.find((u) => u.email === email)
 }
 
-export function insertUserDB(email: string, password_hash: string, first_name?: string, last_name?: string): number {
+export function insertUserDB(
+  email: string,
+  password_hash: string,
+  first_name?: string,
+  last_name?: string
+): number {
   const users = readUsers()
   const now = new Date().toISOString()
-  const nextId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1
+  const nextId = users.length > 0 ? Math.max(...users.map((u) => u.id)) + 1 : 1
   users.push({ id: nextId, email, password_hash, created_at: now, first_name, last_name })
   writeUsers(users)
   return nextId
@@ -50,5 +55,5 @@ export function insertUserDB(email: string, password_hash: string, first_name?: 
 
 export function findUserByIdDB(id: number): User | undefined {
   const users = readUsers()
-  return users.find(u => u.id === id)
+  return users.find((u) => u.id === id)
 }

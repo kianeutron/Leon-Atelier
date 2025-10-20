@@ -52,8 +52,12 @@ function buildMatrixForCategory(cat: Category) {
   }
   // Footwear (leather shoes & boots)
   if (
-    slug.includes('foot') || slug.includes('shoe') || slug.includes('boot') ||
-    name.includes('footwear') || name.includes('shoe') || name.includes('boots')
+    slug.includes('foot') ||
+    slug.includes('shoe') ||
+    slug.includes('boot') ||
+    name.includes('footwear') ||
+    name.includes('shoe') ||
+    name.includes('boots')
   ) {
     return {
       sizes: ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45'],
@@ -68,8 +72,8 @@ function buildMatrixForCategory(cat: Category) {
   return {
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     measurements: [
-      { label: 'Primary (cm)', values: ['-','-','-','-','-'] },
-      { label: 'Secondary (cm)', values: ['-','-','-','-','-'] },
+      { label: 'Primary (cm)', values: ['-', '-', '-', '-', '-'] },
+      { label: 'Secondary (cm)', values: ['-', '-', '-', '-', '-'] },
     ],
   }
 }
@@ -83,8 +87,8 @@ export default async function SizeGuidePage() {
       <header className="mb-6">
         <h1 className="text-3xl font-semibold text-brownDark">Size guide</h1>
         <p className="text-brown/80 mt-2 max-w-2xl">
-          Find your best fit across our categories. Measurements are in centimeters and refer to the garment.
-          If you’re between sizes, we recommend the larger size for tailored pieces.
+          Find your best fit across our categories. Measurements are in centimeters and refer to the
+          garment. If you’re between sizes, we recommend the larger size for tailored pieces.
         </p>
       </header>
 
@@ -99,8 +103,8 @@ export default async function SizeGuidePage() {
               cat.Slug === 'bottoms'
                 ? 'Inseam based on regular length. Short/long options vary by style.'
                 : cat.Slug === 'tops'
-                ? 'Chest measured 2.5cm below armhole across the front.'
-                : undefined
+                  ? 'Chest measured 2.5cm below armhole across the front.'
+                  : undefined
             }
           />
         ))}
@@ -109,13 +113,27 @@ export default async function SizeGuidePage() {
       <section className="mt-8 rounded-2xl border border-sand bg-cream p-4 sm:p-6">
         <h2 className="text-lg font-semibold text-brownDark mb-2">How to measure</h2>
         <ul className="text-sm text-brown/80 space-y-1 list-disc pl-5">
-          <li><strong>Chest</strong>: Measure around the fullest part, under the arms.</li>
-          <li><strong>Shoulder</strong>: Across back from shoulder tip to shoulder tip.</li>
-          <li><strong>Length</strong>: From high shoulder point to hem.</li>
-          <li><strong>Sleeve</strong>: From shoulder seam to cuff.</li>
-          <li><strong>Waist</strong>: Around your natural waistline.</li>
-          <li><strong>Hip</strong>: Around the fullest part of the seat.</li>
-          <li><strong>Inseam</strong>: From crotch seam to hem.</li>
+          <li>
+            <strong>Chest</strong>: Measure around the fullest part, under the arms.
+          </li>
+          <li>
+            <strong>Shoulder</strong>: Across back from shoulder tip to shoulder tip.
+          </li>
+          <li>
+            <strong>Length</strong>: From high shoulder point to hem.
+          </li>
+          <li>
+            <strong>Sleeve</strong>: From shoulder seam to cuff.
+          </li>
+          <li>
+            <strong>Waist</strong>: Around your natural waistline.
+          </li>
+          <li>
+            <strong>Hip</strong>: Around the fullest part of the seat.
+          </li>
+          <li>
+            <strong>Inseam</strong>: From crotch seam to hem.
+          </li>
         </ul>
       </section>
     </div>

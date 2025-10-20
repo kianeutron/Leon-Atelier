@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -26,7 +26,9 @@ export default function AccountPage() {
         mounted && setLoading(false)
       }
     })()
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [router])
 
   if (loading) {
@@ -41,8 +43,16 @@ export default function AccountPage() {
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-2xl font-semibold mb-4">My account</h1>
       <div className="grid gap-3 w-full rounded-lg border border-sand bg-cream p-4">
-        <div><span className="text-brown/70 text-sm">Name</span><div className="text-brownDark">{user?.firstName ?? '-'} {user?.lastName ?? ''}</div></div>
-        <div><span className="text-brown/70 text-sm">Email</span><div className="text-brownDark">{user?.email}</div></div>
+        <div>
+          <span className="text-brown/70 text-sm">Name</span>
+          <div className="text-brownDark">
+            {user?.firstName ?? '-'} {user?.lastName ?? ''}
+          </div>
+        </div>
+        <div>
+          <span className="text-brown/70 text-sm">Email</span>
+          <div className="text-brownDark">{user?.email}</div>
+        </div>
         <div className="pt-2">
           <LogoutButton />
         </div>

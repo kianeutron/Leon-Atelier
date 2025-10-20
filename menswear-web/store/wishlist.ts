@@ -17,12 +17,13 @@ export type WishlistState = {
 
 export const useWishlist = create<WishlistState>((set, get) => ({
   items: [],
-  add: (item) => set((s) => {
-    if (s.items.some(i => i.productId === item.productId)) return s
-    return { items: [...s.items, item] }
-  }),
-  remove: (productId) => set((s) => ({ items: s.items.filter(i => i.productId !== productId) })),
-  has: (productId) => get().items.some(i => i.productId === productId),
+  add: (item) =>
+    set((s) => {
+      if (s.items.some((i) => i.productId === item.productId)) return s
+      return { items: [...s.items, item] }
+    }),
+  remove: (productId) => set((s) => ({ items: s.items.filter((i) => i.productId !== productId) })),
+  has: (productId) => get().items.some((i) => i.productId === productId),
   clear: () => set({ items: [] }),
 }))
 

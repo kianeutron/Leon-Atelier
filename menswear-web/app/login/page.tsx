@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -51,12 +51,18 @@ export default function LoginPage() {
             className="w-full border border-sand bg-cream rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/40"
           />
           {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button disabled={loading} className="w-full bg-brown text-cream px-4 py-2 rounded-md hover:opacity-95 disabled:opacity-60">
+          <button
+            disabled={loading}
+            className="w-full bg-brown text-cream px-4 py-2 rounded-md hover:opacity-95 disabled:opacity-60"
+          >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
           <div className="text-sm text-brown/80 text-center">
-            Don't have an account?{' '}
-            <Link href="/register" className="text-brownDark underline underline-offset-2 hover:text-brown">
+            Don&apos;t have an account?{' '}
+            <Link
+              href="/register"
+              className="text-brownDark underline underline-offset-2 hover:text-brown"
+            >
               Create one
             </Link>
           </div>

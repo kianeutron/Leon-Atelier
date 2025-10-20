@@ -19,8 +19,8 @@ export async function GET(req: Request) {
       cache: 'force-cache',
       headers: {
         // Some CDNs require a UA
-        'User-Agent': 'Mozilla/5.0 (compatible; LeonAtelier/1.0)'
-      }
+        'User-Agent': 'Mozilla/5.0 (compatible; LeonAtelier/1.0)',
+      },
     })
     if (!upstream.ok || !upstream.body) return new NextResponse('Upstream error', { status: 502 })
 

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect } from 'react'
 
@@ -14,7 +14,6 @@ export default function SmoothScroll() {
       // Ensure vertical scroll is allowed
       document.documentElement.style.overflowY = 'auto'
       document.body.style.overflowY = 'auto'
-
       ;(async () => {
         try {
           const mod = await import('lenis')
@@ -37,7 +36,9 @@ export default function SmoothScroll() {
 
     return () => {
       cancelAnimationFrame(id)
-      try { lenis?.destroy?.() } catch {}
+      try {
+        lenis?.destroy?.()
+      } catch {}
     }
   }, [])
 

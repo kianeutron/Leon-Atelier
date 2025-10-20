@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
@@ -36,31 +36,44 @@ export function SortFilterBar({
           <input
             placeholder="Search products..."
             value={q}
-            onChange={(e)=>setQ(e.target.value)}
+            onChange={(e) => setQ(e.target.value)}
             className="w-full rounded-md border border-sand bg-cream pl-9 pr-9 py-2.5 text-brown outline-none focus:ring-2 focus:ring-brown/30"
           />
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brown/50">🔍</span>
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brown/50">
+            🔍
+          </span>
           {q && (
             <button
               aria-label="Clear search"
-              onClick={()=>{ setQ(''); onChange({ q: '' }) }}
+              onClick={() => {
+                setQ('')
+                onChange({ q: '' })
+              }}
               className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full text-brown/60 hover:text-brown hover:bg-sand/40 flex items-center justify-center"
-            >×</button>
+            >
+              ×
+            </button>
           )}
         </div>
         {/* Category chips */}
         <div className="-mx-3 px-3 md:mx-0 md:px-0 overflow-x-auto no-scrollbar flex gap-2 flex-1 items-center">
           <button
             key="all"
-            onClick={()=>onChange({ categoryId: '' })}
+            onClick={() => onChange({ categoryId: '' })}
             className={`rounded-full border px-3 py-1.5 text-sm ${!value.categoryId ? 'border-brown bg-brown text-cream' : 'border-sand bg-cream hover:border-brown'}`}
-          >All</button>
-          {categories.map(c => {
+          >
+            All
+          </button>
+          {categories.map((c) => {
             const active = value.categoryId === c.Id
             return (
-              <button key={c.Id} onClick={()=>onChange({ categoryId: active ? '' : c.Id })}
+              <button
+                key={c.Id}
+                onClick={() => onChange({ categoryId: active ? '' : c.Id })}
                 className={`rounded-full border px-3 py-1.5 text-sm ${active ? 'border-brown bg-brown text-cream' : 'border-sand bg-cream hover:border-brown'}`}
-              >{c.Name}</button>
+              >
+                {c.Name}
+              </button>
             )
           })}
         </div>
@@ -68,7 +81,7 @@ export function SortFilterBar({
         <div className="w-full md:w-auto md:ml-auto">
           <select
             value={value.sort}
-            onChange={(e)=>onChange({ sort: e.target.value as SortKey })}
+            onChange={(e) => onChange({ sort: e.target.value as SortKey })}
             className="w-full md:w-auto rounded-md border border-sand bg-cream px-3 py-2.5 text-brown outline-none focus:ring-2 focus:ring-brown/30"
           >
             <option value="newest">Newest</option>
@@ -81,4 +94,3 @@ export function SortFilterBar({
     </div>
   )
 }
-

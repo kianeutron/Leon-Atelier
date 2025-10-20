@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { motion, useInView } from 'framer-motion'
 import { Product } from '../lib/types'
@@ -47,8 +47,16 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
       <div className="p-4">
         <div className="flex items-center justify-between">
-          <Link href={`/products/${product.Slug}`} className="text-brownDark truncate hover:underline" title={product.Title}>{product.Title}</Link>
-          <span className="text-brown/80">{price ? formatMoney(price.AmountCents, price.CurrencyCode) : '—'}</span>
+          <Link
+            href={`/products/${product.Slug}`}
+            className="text-brownDark truncate hover:underline"
+            title={product.Title}
+          >
+            {product.Title}
+          </Link>
+          <span className="text-brown/80">
+            {price ? formatMoney(price.AmountCents, price.CurrencyCode) : '—'}
+          </span>
         </div>
         {product.Subtitle && (
           <p className="text-sm text-brown/70 line-clamp-2">{product.Subtitle}</p>

@@ -8,11 +8,11 @@ export async function GET() {
   try {
     const res = await fetch(`${base}/auth/me`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     })
     if (!res.ok) return NextResponse.json({ user: null })
-    const data = await res.json().catch(()=>({ user: null }))
+    const data = await res.json().catch(() => ({ user: null }))
     return NextResponse.json({ user: data?.user ?? null })
   } catch {
     return NextResponse.json({ user: null })

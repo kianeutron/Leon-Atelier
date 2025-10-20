@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 
@@ -9,21 +9,34 @@ export function Newsletter() {
   return (
     <section className="relative isolate">
       {/* section backdrop */}
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(1200px_360px_at_10%_-10%,rgba(201,111,85,0.07),transparent),radial-gradient(900px_280px_at_100%_120%,rgba(199,161,122,0.08),transparent)]" />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(1200px_360px_at_10%_-10%,rgba(201,111,85,0.07),transparent),radial-gradient(900px_280px_at_100%_120%,rgba(199,161,122,0.08),transparent)]"
+      />
       <div className="relative mx-auto max-w-6xl px-4 py-20">
         <div className="rounded-2xl p-[1px] bg-gradient-to-br from-sand to-transparent">
           <div className="rounded-[1rem] border border-sand bg-cream/70 backdrop-blur px-6 py-8 md:px-10 md:py-12 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-8 md:gap-10 items-center">
               {/* Copy */}
               <div>
-                <span className="inline-block rounded-full border border-sand px-3 py-1 text-xs text-brown/70">Members-only</span>
-                <h3 className="mt-3 font-display text-3xl md:text-4xl text-brownDark">Join the atelier</h3>
-                <p className="mt-2 text-brown/80">Access exclusive drops, styling notes, and private invitations—delivered occasionally.</p>
+                <span className="inline-block rounded-full border border-sand px-3 py-1 text-xs text-brown/70">
+                  Members-only
+                </span>
+                <h3 className="mt-3 font-display text-3xl md:text-4xl text-brownDark">
+                  Join the atelier
+                </h3>
+                <p className="mt-2 text-brown/80">
+                  Access exclusive drops, styling notes, and private invitations—delivered
+                  occasionally.
+                </p>
               </div>
 
               {/* Form */}
               <form
-                onSubmit={(e) => { e.preventDefault(); setSent(true) }}
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  setSent(true)
+                }}
                 className="flex flex-col sm:flex-row gap-3 md:justify-end"
               >
                 <div className="flex-1 sm:flex-[0_1_420px] relative">
@@ -55,4 +68,3 @@ export function Newsletter() {
     </section>
   )
 }
-

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -12,14 +12,16 @@ export default function SearchModal() {
   const { searchOpen, closeSearch } = useUI()
   const [q, setQ] = useState('')
   const [loading, setLoading] = useState(false)
-  const [results, setResults] = useState<{
-    Id: string
-    Slug: string
-    Title: string
-    Subtitle?: string | null
-    image?: string
-    price?: string
-  }[]>([])
+  const [results, setResults] = useState<
+    {
+      Id: string
+      Slug: string
+      Title: string
+      Subtitle?: string | null
+      image?: string
+      price?: string
+    }[]
+  >([])
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   // Focus input when opening
@@ -68,7 +70,9 @@ export default function SearchModal() {
             Title: p.Title,
             Subtitle: p.Subtitle,
             image: img ? resolveImageUrl(img) : undefined,
-            price: price ? `${(price.AmountCents/100).toFixed(2)} ${price.CurrencyCode}` : undefined,
+            price: price
+              ? `${(price.AmountCents / 100).toFixed(2)} ${price.CurrencyCode}`
+              : undefined,
           }
         })
       )
@@ -110,21 +114,21 @@ export default function SearchModal() {
                 className="flex-1 bg-transparent outline-none text-brownDark placeholder:text-brown/60"
                 placeholder="Search products, descriptions, categories…"
                 value={q}
-                onChange={(e)=>setQ(e.target.value)}
+                onChange={(e) => setQ(e.target.value)}
               />
-              <button onClick={closeSearch} aria-label="Close" className="rounded-md p-1 hover:bg-sand/50">
+              <button
+                onClick={closeSearch}
+                aria-label="Close"
+                className="rounded-md p-1 hover:bg-sand/50"
+              >
                 <X size={16} />
               </button>
             </div>
 
             {/* Results */}
             <div className="max-h-[60vh] overflow-y-auto">
-              {!q && (
-                <div className="p-4 text-brown/70 text-sm">Type to search…</div>
-              )}
-              {q && loading && (
-                <div className="p-4 text-brown/70 text-sm">Searching…</div>
-              )}
+              {!q && <div className="p-4 text-brown/70 text-sm">Type to search…</div>}
+              {q && loading && <div className="p-4 text-brown/70 text-sm">Searching…</div>}
               {q && !loading && results.length === 0 && (
                 <div className="p-4 text-brown/70 text-sm">No results.</div>
               )}
@@ -140,14 +144,20 @@ export default function SearchModal() {
                         <div className="h-14 w-12 shrink-0 overflow-hidden rounded-md border border-sand bg-cream/60">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           {r.image ? (
-                            <img src={r.image} alt={r.Title} className="h-full w-full object-cover" />
+                            <img
+                              src={r.image}
+                              alt={r.Title}
+                              className="h-full w-full object-cover"
+                            />
                           ) : (
                             <div className="h-full w-full bg-sand" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-brownDark truncate">{r.Title}</div>
-                          {r.Subtitle && <div className="text-sm text-brown/70 truncate">{r.Subtitle}</div>}
+                          {r.Subtitle && (
+                            <div className="text-sm text-brown/70 truncate">{r.Subtitle}</div>
+                          )}
                         </div>
                         {r.price && <div className="text-sm text-brown/80">{r.price}</div>}
                       </Link>

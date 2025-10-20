@@ -5,7 +5,8 @@ import { findUserByEmailDB, insertUserDB } from './db'
 const AUTH_SECRET = (() => {
   const s = process.env.AUTH_SECRET
   if (process.env.NODE_ENV === 'production') {
-    if (!s || s.length < 32) throw new Error('AUTH_SECRET must be set to a strong value in production')
+    if (!s || s.length < 32)
+      throw new Error('AUTH_SECRET must be set to a strong value in production')
     return s
   }
   return s || 'dev-secret-change'
@@ -70,13 +71,18 @@ export function getSessionUserId(): number | null {
   const token = cookies().get(isProd ? '__Host-session' : 'session')?.value
   if (!token) return null
   const v = verifySession(token)
-  return v.valid ? v.userId ?? null : null
+  return v.valid ? (v.userId ?? null) : null
 }
 
 export function findUserByEmail(email: string) {
   return findUserByEmailDB(email)
 }
 
-export function createUser(email: string, passwordHash: string, first_name?: string, last_name?: string) {
+export function createUser(
+  email: string,
+  passwordHash: string,
+  first_name?: string,
+  last_name?: string
+) {
   return insertUserDB(email, passwordHash, first_name, last_name)
 }

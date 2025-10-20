@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import Link from 'next/link'
 import { useUI } from '../store/ui'
@@ -27,7 +27,9 @@ export function SiteHeader() {
     try {
       const u = getUser()
       setAccountHref(u ? '/account' : '/register')
-    } catch { setAccountHref('/register') }
+    } catch {
+      setAccountHref('/register')
+    }
   }, [pathname])
 
   const nav = [
@@ -38,14 +40,30 @@ export function SiteHeader() {
   ]
 
   return (
-    <header className={`sticky top-0 z-50 border-b border-sand/60 backdrop-blur ${scrolled ? 'bg-cream/70 shadow-soft' : 'bg-cream/40'}`}>
-      <div className={`mx-auto max-w-6xl px-4 ${scrolled ? 'py-3' : 'py-4'} grid grid-cols-[auto_1fr_auto] items-center gap-2 transition-all`}>
+    <header
+      className={`sticky top-0 z-50 border-b border-sand/60 backdrop-blur ${scrolled ? 'bg-cream/70 shadow-soft' : 'bg-cream/40'}`}
+    >
+      <div
+        className={`mx-auto max-w-6xl px-4 ${scrolled ? 'py-3' : 'py-4'} grid grid-cols-[auto_1fr_auto] items-center gap-2 transition-all`}
+      >
         {/* Left: brand + hamburger */}
         <div className="flex items-center gap-3">
-          <button aria-label="Menu" onClick={() => setOpen(v => !v)} className="rounded-md p-2 hover:bg-sand/50 transition md:hidden">
-            {open ? <X size={18} className="text-brown"/> : <Menu size={18} className="text-brown" />}
+          <button
+            aria-label="Menu"
+            onClick={() => setOpen((v) => !v)}
+            className="rounded-md p-2 hover:bg-sand/50 transition md:hidden"
+          >
+            {open ? (
+              <X size={18} className="text-brown" />
+            ) : (
+              <Menu size={18} className="text-brown" />
+            )}
           </button>
-          <Link href="/" aria-label="Léon Atelier home" className="group flex items-center gap-2 whitespace-nowrap">
+          <Link
+            href="/"
+            aria-label="Léon Atelier home"
+            className="group flex items-center gap-2 whitespace-nowrap"
+          >
             {/* Monogram emblem */}
             <span className="relative grid place-items-center h-7 w-7 rounded-full border border-sand bg-cream shadow-sm overflow-hidden">
               <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(201,111,85,0.18),transparent_60%)]" />
@@ -59,7 +77,10 @@ export function SiteHeader() {
         </div>
 
         {/* Center: nav */}
-        <nav aria-label="Primary" className="relative hidden md:flex items-center justify-center gap-2 text-brown rounded-full bg-cream/60 px-1 py-1 border border-sand/60">
+        <nav
+          aria-label="Primary"
+          className="relative hidden md:flex items-center justify-center gap-2 text-brown rounded-full bg-cream/60 px-1 py-1 border border-sand/60"
+        >
           {nav.map((item) => {
             const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
             return (
@@ -71,7 +92,10 @@ export function SiteHeader() {
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
-                <Link href={item.href} className="relative px-3 py-1.5 rounded-full hover:text-brownDark focus:outline-none focus:ring-2 focus:ring-gold/40">
+                <Link
+                  href={item.href}
+                  className="relative px-3 py-1.5 rounded-full hover:text-brownDark focus:outline-none focus:ring-2 focus:ring-gold/40"
+                >
                   {item.label}
                 </Link>
               </div>
@@ -81,10 +105,18 @@ export function SiteHeader() {
 
         {/* Right: actions */}
         <div className="relative z-10 flex items-center justify-end gap-1 sm:gap-3 text-brown whitespace-nowrap">
-          <button onClick={() => useUI.getState().openSearch()} aria-label="Search" className="rounded-md p-2 hover:bg-sand/50 transition">
+          <button
+            onClick={() => useUI.getState().openSearch()}
+            aria-label="Search"
+            className="rounded-md p-2 hover:bg-sand/50 transition"
+          >
             <Search size={18} />
           </button>
-          <Link href="/liked" aria-label="Liked" className="inline-flex rounded-md p-2 hover:bg-sand/50 transition">
+          <Link
+            href="/liked"
+            aria-label="Liked"
+            className="inline-flex rounded-md p-2 hover:bg-sand/50 transition"
+          >
             <Heart size={18} />
           </Link>
           {/* Cart button with count */}

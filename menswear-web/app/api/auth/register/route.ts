@@ -7,8 +7,10 @@ export async function POST(req: Request) {
     if (typeof email !== 'string' || typeof password !== 'string') {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 400 })
     }
-    if (password !== confirmPassword) return NextResponse.json({ error: 'Passwords do not match' }, { status: 400 })
-    if (password.length < 6) return NextResponse.json({ error: 'Password too short' }, { status: 400 })
+    if (password !== confirmPassword)
+      return NextResponse.json({ error: 'Passwords do not match' }, { status: 400 })
+    if (password.length < 6)
+      return NextResponse.json({ error: 'Password too short' }, { status: 400 })
 
     const base = process.env.AUTH_API_URL || 'http://localhost:5252'
     const res = await fetch(`${base}/auth/register`, {
@@ -28,7 +30,10 @@ export async function POST(req: Request) {
     if (!res.ok) {
       const msg = data?.error || data?.title || data?.message || 'Register failed'
       const detail = data?.detail
-      return NextResponse.json({ error: msg, detail, upstreamStatus: res.status }, { status: res.status || 500 })
+      return NextResponse.json(
+        { error: msg, detail, upstreamStatus: res.status },
+        { status: res.status || 500 }
+      )
     }
 
     const user = data?.user

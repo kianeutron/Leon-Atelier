@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { motion } from 'framer-motion'
 
@@ -6,21 +6,24 @@ export function Testimonials() {
   const quotes = [
     {
       q: 'Elevated basics that feel premium and pair with everything I own.',
-      a: 'Daniel K.'
+      a: 'Daniel K.',
     },
     {
       q: 'Warm earth tones and soft textures—my new daily uniform.',
-      a: 'Marco V.'
+      a: 'Marco V.',
     },
     {
       q: 'Minimal, tailored, and comfortable. Subtle luxury done right.',
-      a: 'Amin R.'
+      a: 'Amin R.',
     },
   ]
   return (
     <section className="relative isolate">
       {/* section backdrop */}
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(1200px_300px_at_50%_-10%,rgba(201,111,85,0.06),transparent),linear-gradient(180deg,rgba(245,239,231,0.85),rgba(245,239,231,0.65))]" />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(1200px_300px_at_50%_-10%,rgba(201,111,85,0.06),transparent),linear-gradient(180deg,rgba(245,239,231,0.85),rgba(245,239,231,0.65))]"
+      />
       <div className="relative mx-auto max-w-6xl px-4 py-20">
         <div className="mb-8 flex items-end justify-between">
           <div>
@@ -38,7 +41,9 @@ export function Testimonials() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7"
         >
           {/* big decorative quote */}
-          <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block select-none text-brown/10 text-[120px] leading-none">“</div>
+          <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block select-none text-brown/10 text-[120px] leading-none">
+            “
+          </div>
 
           {quotes.map((t, i) => (
             <motion.blockquote
@@ -61,4 +66,3 @@ export function Testimonials() {
     </section>
   )
 }
-

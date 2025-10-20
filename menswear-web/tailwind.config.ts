@@ -28,15 +28,15 @@ export default {
       },
       boxShadow: {
         soft: '0 8px 30px rgba(46,34,26,0.08)',
-        glow: '0 0 0 6px rgba(199,161,122,0.15)'
+        glow: '0 0 0 6px rgba(199,161,122,0.15)',
       },
       borderRadius: {
         xl: '14px',
       },
       container: {
         center: true,
-        padding: '1rem'
-      }
+        padding: '1rem',
+      },
     },
   },
   plugins: [],

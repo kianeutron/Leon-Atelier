@@ -7,12 +7,20 @@ export function middleware(req: NextRequest) {
 
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5252'
   const apiOrigin = (() => {
-    try { return new URL(apiBase).origin } catch { return 'http://localhost:5252' }
+    try {
+      return new URL(apiBase).origin
+    } catch {
+      return 'http://localhost:5252'
+    }
   })()
 
   const supabaseBase = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseOrigin = (() => {
-    try { return supabaseBase ? new URL(supabaseBase).origin : '' } catch { return '' }
+    try {
+      return supabaseBase ? new URL(supabaseBase).origin : ''
+    } catch {
+      return ''
+    }
   })()
 
   const cspParts = [

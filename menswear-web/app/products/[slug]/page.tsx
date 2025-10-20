@@ -9,7 +9,7 @@ import { ProductDetailClient } from '../../../components/ProductDetailClient'
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const data = await fetchProductBySlug(params.slug).catch(() => null)
   return {
-    title: data?.product ? `${data.product.Title} | Léon Atelier` : 'Product | Léon Atelier'
+    title: data?.product ? `${data.product.Title} | Léon Atelier` : 'Product | Léon Atelier',
   }
 }
 
@@ -19,13 +19,15 @@ export default async function ProductDetail({ params }: { params: { slug: string
     return (
       <div className="mx-auto max-w-4xl px-4 py-16">
         <p className="text-brown/70">Product not found.</p>
-        <Link href="/products" className="text-brown underline">Back to products</Link>
+        <Link href="/products" className="text-brown underline">
+          Back to products
+        </Link>
       </div>
     )
   }
   const { product, price, image, images } = data
   const imgUrl = image ? resolveImageUrl(image) : undefined
-  const imgUrls = images && images.length ? images.map(resolveImageUrl) : (imgUrl ? [imgUrl] : [])
+  const imgUrls = images && images.length ? images.map(resolveImageUrl) : imgUrl ? [imgUrl] : []
 
   return (
     <ProductDetailClient
@@ -35,7 +37,7 @@ export default async function ProductDetail({ params }: { params: { slug: string
       imageUrl={imgUrl}
       images={imgUrls}
       description={product.Description ?? undefined}
-      sizes={["XS","S","M","L","XL"]}
+      sizes={['XS', 'S', 'M', 'L', 'XL']}
     />
   )
 }

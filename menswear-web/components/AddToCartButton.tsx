@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useCart } from '../store/cart'
 import { useUI } from '../store/ui'
@@ -27,7 +27,10 @@ export function AddToCartButton({
   }
 
   return (
-    <button onClick={handleAdd} className="px-6 py-3 bg-brown text-cream rounded-md hover:bg-brownDark transition">
+    <button
+      onClick={handleAdd}
+      className="px-6 py-3 bg-brown text-cream rounded-md hover:bg-brownDark transition"
+    >
       Add to cart
     </button>
   )

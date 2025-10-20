@@ -1,49 +1,56 @@
-"use client"
+'use client'
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from 'react'
 
-type Msg = { role: "user" | "assistant"; content: string }
+type Msg = { role: 'user' | 'assistant'; content: string }
 
 export default function SupportChat() {
   const [open, setOpen] = useState(false)
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Hi! I’m your store assistant. Ask me anything about products, sizing, shipping, or returns." },
+    {
+      role: 'assistant',
+      content:
+        'Hi! I’m your store assistant. Ask me anything about products, sizing, shipping, or returns.',
+    },
   ])
   const boxRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: "smooth" })
+    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, open])
 
   const canSend = useMemo(() => input.trim().length > 0 && !loading, [input, loading])
 
   async function send() {
     if (!canSend) return
-    const userMsg: Msg = { role: "user", content: input.trim() }
+    const userMsg: Msg = { role: 'user', content: input.trim() }
     setMessages((m) => [...m, userMsg])
-    setInput("")
+    setInput('')
     setLoading(true)
     try {
-      const res = await fetch("/api/support-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/support-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [...messages, userMsg] }),
       })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error('Failed')
       const data = await res.json()
-      const reply: string = data.reply || "Sorry, I couldn’t get a response right now."
-      setMessages((m) => [...m, { role: "assistant", content: reply }])
+      const reply: string = data.reply || 'Sorry, I couldn’t get a response right now.'
+      setMessages((m) => [...m, { role: 'assistant', content: reply }])
     } catch {
-      setMessages((m) => [...m, { role: "assistant", content: "Sorry, something went wrong. Please try again." }])
+      setMessages((m) => [
+        ...m,
+        { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' },
+      ])
     } finally {
       setLoading(false)
     }
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       send()
     }
@@ -55,16 +62,26 @@ export default function SupportChat() {
         <div className="mb-3 w-[92vw] max-w-sm rounded-2xl border border-sand bg-cream shadow-xl">
           <div className="flex items-center justify-between px-4 py-3 border-b border-sand">
             <div className="text-brownDark font-medium">Support</div>
-            <button onClick={() => setOpen(false)} className="rounded-full px-2 py-1 text-brown hover:bg-sand/40">×</button>
+            <button
+              onClick={() => setOpen(false)}
+              className="rounded-full px-2 py-1 text-brown hover:bg-sand/40"
+            >
+              ×
+            </button>
           </div>
           <div ref={boxRef} className="px-3 py-3 max-h-80 overflow-auto space-y-3">
             {messages.map((m, i) => (
-              <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                <div className={
-                  m.role === "user"
-                    ? "max-w-[85%] rounded-2xl px-3 py-2 bg-brown text-cream"
-                    : "max-w-[85%] rounded-2xl px-3 py-2 bg-cream border border-sand text-brownDark"
-                }>
+              <div
+                key={i}
+                className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}
+              >
+                <div
+                  className={
+                    m.role === 'user'
+                      ? 'max-w-[85%] rounded-2xl px-3 py-2 bg-brown text-cream'
+                      : 'max-w-[85%] rounded-2xl px-3 py-2 bg-cream border border-sand text-brownDark'
+                  }
+                >
                   {m.content}
                 </div>
               </div>
@@ -82,9 +99,9 @@ export default function SupportChat() {
               <button
                 onClick={send}
                 disabled={!canSend}
-                className={`rounded-xl px-4 py-2 transition ${canSend ? "bg-brown text-cream hover:bg-brown/90" : "bg-sand text-brown/60 cursor-not-allowed"}`}
+                className={`rounded-xl px-4 py-2 transition ${canSend ? 'bg-brown text-cream hover:bg-brown/90' : 'bg-sand text-brown/60 cursor-not-allowed'}`}
               >
-                {loading ? "..." : "Send"}
+                {loading ? '...' : 'Send'}
               </button>
             </div>
           </div>

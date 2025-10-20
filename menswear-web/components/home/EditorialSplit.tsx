@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -13,7 +13,13 @@ export function EditorialSplit() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
         {/* Collage image column */}
-        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}} className="relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="relative"
+        >
           {/* main image */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -23,10 +29,10 @@ export function EditorialSplit() {
           />
           {/* floating detail tile */}
           <motion.div
-            initial={{opacity:0, y:12}}
-            whileInView={{opacity:1, y:0}}
-            viewport={{once:true}}
-            transition={{delay:.1, duration:.5}}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
             className="absolute -right-4 -bottom-6 w-[44%] rounded-xl overflow-hidden border border-sand shadow-soft bg-cream/80 backdrop-blur"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -39,16 +45,27 @@ export function EditorialSplit() {
         </motion.div>
 
         {/* Copy column */}
-        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.1,duration:0.6}}>
-          <span className="inline-flex items-center gap-2 rounded-full border border-sand/70 bg-cream/80 px-3 py-1 text-xs tracking-wide text-brown/80">Editor’s pick</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1, duration: 0.6 }}
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-sand/70 bg-cream/80 px-3 py-1 text-xs tracking-wide text-brown/80">
+            Editor’s pick
+          </span>
           <h3 className="mt-4 font-display text-3xl md:text-4xl text-brownDark leading-tight">
             Everyday ease, elevated
           </h3>
           <p className="mt-4 text-brown/80">
-            Clean lines and tactile knits built for real life pair, layer, and repeat in warm neutrals that always feel considered.
+            Clean lines and tactile knits built for real life pair, layer, and repeat in warm
+            neutrals that always feel considered.
           </p>
           <div className="mt-7">
-            <Link href="/products" className="inline-flex items-center gap-2 rounded-md border border-sand bg-cream px-5 py-3 text-brown hover:bg-brown hover:text-cream transition">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 rounded-md border border-sand bg-cream px-5 py-3 text-brown hover:bg-brown hover:text-cream transition"
+            >
               Shop the edit
               <span aria-hidden>→</span>
             </Link>
@@ -58,4 +75,3 @@ export function EditorialSplit() {
     </section>
   )
 }
-

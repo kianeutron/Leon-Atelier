@@ -14,8 +14,12 @@ export async function POST(req: Request) {
       body: JSON.stringify({ email, password }),
       cache: 'no-store',
     })
-    const data = await res.json().catch(()=>({}))
-    if (!res.ok) return NextResponse.json({ error: data?.error || 'Invalid credentials' }, { status: res.status })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok)
+      return NextResponse.json(
+        { error: data?.error || 'Invalid credentials' },
+        { status: res.status }
+      )
     const token = data?.token as string | undefined
     if (token) {
       cookies().set('session', token, {
