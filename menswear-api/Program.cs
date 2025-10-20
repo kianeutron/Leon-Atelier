@@ -88,8 +88,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 
-// Bind to a stable local URL unless overridden by ASPNETCORE_URLS
-builder.WebHost.UseUrls(Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? "http://localhost:5252");
+// Prefer Render's PORT if available; else ASPNETCORE_URLS; else localhost
+var renderPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(renderPort))
+{
+    builder.WebHost.UseUrls($"http://+:{renderPort}");
+}
+else
+{
+    builder.WebHost.UseUrls(Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? "http://localhost:5252");
+}
 
 // Serilog simple console
 builder.Host.UseSerilog((ctx, lc) => lc
