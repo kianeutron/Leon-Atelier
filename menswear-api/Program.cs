@@ -121,22 +121,26 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Ensure email verification columns exist (PostgreSQL) without formal migrations
-using (var scope = app.Services.CreateScope())
+// Optionally run a lightweight schema patch at startup (disable by default for hosted DBs)
+var runStartupSql = (Environment.GetEnvironmentVariable("ENABLE_STARTUP_SQL") ?? "0") == "1";
+if (runStartupSql)
 {
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var sql = @"
-            ALTER TABLE IF EXISTS users_app
-              ADD COLUMN IF NOT EXISTS is_email_verified boolean NOT NULL DEFAULT false,
-              ADD COLUMN IF NOT EXISTS email_verification_token text NULL,
-              ADD COLUMN IF NOT EXISTS email_verified_at timestamp with time zone NULL;";
-        await db.Database.ExecuteSqlRawAsync(sql);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[Startup] Failed to ensure verification columns: {ex.Message}");
+        try
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var sql = @"
+                ALTER TABLE IF EXISTS users_app
+                  ADD COLUMN IF NOT EXISTS is_email_verified boolean NOT NULL DEFAULT false,
+                  ADD COLUMN IF NOT EXISTS email_verification_token text NULL,
+                  ADD COLUMN IF NOT EXISTS email_verified_at timestamp with time zone NULL;";
+            await db.Database.ExecuteSqlRawAsync(sql);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Startup] Failed to ensure verification columns: {ex.Message}");
+        }
     }
 }
 
@@ -146,12 +150,17 @@ app.MapGet("/debug/ping", async (MensWear.Api.Data.AppDbContext db) =>
     try
     {
         var canConnect = await db.Database.CanConnectAsync();
-        var count = await db.Products.CountAsync();
+        int? count = null;
+        if (canConnect)
+        {
+            try { count = await db.Products.CountAsync(); } catch { /* ignore */ }
+        }
         return Results.Ok(new { canConnect, products = count });
     }
     catch (Exception ex)
     {
-        return Results.Problem(ex.Message);
+        // Never 500 here; just report connectivity failure
+        return Results.Ok(new { canConnect = false, error = ex.Message });
     }
 });
 
