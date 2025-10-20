@@ -20,9 +20,18 @@ var connString = builder.Configuration.GetConnectionString("Default")
     ?? string.Empty;
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connString).UseSnakeCaseNamingConvention()
-           .EnableDetailedErrors()
-           .EnableSensitiveDataLogging());
+    options
+        .UseNpgsql(connString, npgsql =>
+        {
+            npgsql.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(2),
+                errorCodesToAdd: null
+            );
+        })
+        .UseSnakeCaseNamingConvention()
+        .EnableDetailedErrors()
+        .EnableSensitiveDataLogging());
 
 var frontendOrigin = builder.Configuration["FRONTEND_ORIGIN"]
     ?? Environment.GetEnvironmentVariable("FRONTEND_ORIGIN");
