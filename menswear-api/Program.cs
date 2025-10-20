@@ -11,6 +11,7 @@ using MensWear.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,6 +136,16 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console());
 
 var app = builder.Build();
+
+// Honor X-Forwarded-* from Render so Request.Scheme/Host are correct (https)
+var fwdOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+};
+// In Render, we don't know proxy addresses; allow all networks/proxies
+fwdOptions.KnownNetworks.Clear();
+fwdOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(fwdOptions);
 
 app.UseCors("frontend");
 app.UseAuthentication();
