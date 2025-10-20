@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Leon Atelier</string>
+    <string name="title_activity_main">Leon Atelier</string>
+    <string name="package_name">com.leonatelier.app</string>
+    <string name="custom_url_scheme">com.leonatelier.app</string>
+</resources>
