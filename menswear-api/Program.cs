@@ -23,13 +23,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
            .EnableDetailedErrors()
            .EnableSensitiveDataLogging());
 
+var frontendOrigin = builder.Configuration["FRONTEND_ORIGIN"]
+    ?? Environment.GetEnvironmentVariable("FRONTEND_ORIGIN");
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("frontend", policy =>
-        policy.WithOrigins("http://localhost:3000")
+    {
+        var origins = new List<string>
+        {
+            "http://localhost:3000",
+            "https://localhost:3000"
+        };
+        if (!string.IsNullOrWhiteSpace(frontendOrigin)) origins.Add(frontendOrigin!);
+        policy.WithOrigins(origins.ToArray())
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials());
+              .AllowCredentials();
+    });
 });
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
