@@ -22,7 +22,13 @@ public class ProductImagesController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public IQueryable<ProductImageDto> Get()
+    public IActionResult Get()
+    {
+        try { return Ok(QueryProductImages()); }
+        catch (Exception ex) { return Problem(title: "Get product images failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private IQueryable<ProductImageDto> QueryProductImages()
     {
         return _db.ProductImages.AsNoTracking().ProjectTo<ProductImageDto>(_mapper.ConfigurationProvider);
     }

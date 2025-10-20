@@ -14,7 +14,12 @@ public class DebugController : ControllerBase
     [HttpGet("products")] 
     public async Task<IActionResult> GetProducts()
     {
-        var items = await _db.Products.AsNoTracking().OrderByDescending(p => p.CreatedAt).Take(10).ToListAsync();
-        return Ok(items);
+        try { return Ok(await QueryLatestProductsAsync()); }
+        catch (Exception ex) { return Problem(title: "Debug products failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private async Task<List<Models.Product>> QueryLatestProductsAsync()
+    {
+        return await _db.Products.AsNoTracking().OrderByDescending(p => p.CreatedAt).Take(10).ToListAsync();
     }
 }

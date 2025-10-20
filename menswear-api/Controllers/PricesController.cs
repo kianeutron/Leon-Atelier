@@ -22,7 +22,13 @@ public class PricesController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public IQueryable<PriceDto> Get()
+    public IActionResult Get()
+    {
+        try { return Ok(QueryPrices()); }
+        catch (Exception ex) { return Problem(title: "Get prices failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private IQueryable<PriceDto> QueryPrices()
     {
         return _db.Prices.AsNoTracking().ProjectTo<PriceDto>(_mapper.ConfigurationProvider);
     }

@@ -22,7 +22,13 @@ public class BrandsController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public IQueryable<BrandDto> Get()
+    public IActionResult Get()
+    {
+        try { return Ok(QueryBrands()); }
+        catch (Exception ex) { return Problem(title: "Get brands failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private IQueryable<BrandDto> QueryBrands()
     {
         return _db.Brands.AsNoTracking().ProjectTo<BrandDto>(_mapper.ConfigurationProvider);
     }

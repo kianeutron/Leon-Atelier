@@ -23,10 +23,14 @@ public class ProductsController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public IQueryable<ProductDto> Get()
+    public IActionResult Get()
     {
-        return _db.Products
-            .AsNoTracking()
-            .ProjectTo<ProductDto>(_mapper.ConfigurationProvider);
+        try { return Ok(QueryProducts()); }
+        catch (Exception ex) { return Problem(title: "Get products failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private IQueryable<ProductDto> QueryProducts()
+    {
+        return _db.Products.AsNoTracking().ProjectTo<ProductDto>(_mapper.ConfigurationProvider);
     }
 }

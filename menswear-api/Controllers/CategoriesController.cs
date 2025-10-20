@@ -22,7 +22,13 @@ public class CategoriesController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public IQueryable<CategoryDto> Get()
+    public IActionResult Get()
+    {
+        try { return Ok(QueryCategories()); }
+        catch (Exception ex) { return Problem(title: "Get categories failed", detail: ex.Message, statusCode: 500); }
+    }
+
+    private IQueryable<CategoryDto> QueryCategories()
     {
         return _db.Categories.AsNoTracking().ProjectTo<CategoryDto>(_mapper.ConfigurationProvider);
     }
