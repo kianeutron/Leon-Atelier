@@ -3,11 +3,26 @@
 // Force dynamic rendering to avoid prerender/export issues on this client-only page
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[80vh] grid place-items-center px-4 py-12 bg-cream">
+        <div className="w-full max-w-md rounded-xl border border-sand bg-cream/90 shadow-soft p-6 text-center">
+          <h1 className="text-2xl font-semibold text-brownDark mb-2">Verify your email</h1>
+          <p className="text-brown/80">Loading…</p>
+        </div>
+      </div>
+    }>
+      <VerifyEmailInner />
+    </Suspense>
+  )
+}
+
+function VerifyEmailInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [status, setStatus] = useState<'idle'|'verifying'|'success'|'error'>('idle')
