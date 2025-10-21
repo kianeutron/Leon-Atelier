@@ -42,18 +42,11 @@ export async function fetchCategories(params?: {
 }
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
-  const urls = [
-    `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`,
-    `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`,
-  ]
-  for (const u of urls) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (res.ok) {
-      const data = (await res.json()) as ODataResponse<Product>
-      if (data.value && data.value.length) return data.value[0]
-    }
-  }
-  return null
+  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
+  if (!res.ok) return null
+  const data = (await res.json()) as ODataResponse<Product>
+  return data.value?.[0] ?? null
 }
 
 export async function fetchCategoryCover(categoryId: string): Promise<{ imageUrl: string | null }> {
@@ -73,18 +66,11 @@ export type Price = {
 }
 
 export async function fetchFirstPriceForProduct(productId: string): Promise<Price | null> {
-  const urls = [
-    `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq guid'${productId}'`,
-    `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`,
-  ]
-  for (const u of urls) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (res.ok) {
-      const data = (await res.json()) as ODataResponse<Price>
-      if (data.value && data.value.length) return data.value[0]
-    }
-  }
-  return null
+  const url = `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq guid'${productId}'`
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
+  if (!res.ok) return null
+  const data = (await res.json()) as ODataResponse<Price>
+  return data.value?.[0] ?? null
 }
 
 export type ProductImage = {
@@ -99,33 +85,19 @@ export type ProductImage = {
 }
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
-  const urls = [
-    `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
-    `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`,
-  ]
-  for (const u of urls) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (res.ok) {
-      const data = (await res.json()) as ODataResponse<ProductImage>
-      if (data.value && data.value.length) return data.value[0]
-    }
-  }
-  return null
+  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq guid'${productId}'&$orderby=Position asc`
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
+  if (!res.ok) return null
+  const data = (await res.json()) as ODataResponse<ProductImage>
+  return data.value?.[0] ?? null
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
-  const urls = [
-    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
-    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`,
-  ]
-  for (const u of urls) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (res.ok) {
-      const data = (await res.json()) as ODataResponse<ProductImage>
-      if (data.value && data.value.length) return data.value
-    }
-  }
-  return []
+  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
+  if (!res.ok) return []
+  const data = (await res.json()) as ODataResponse<ProductImage>
+  return data.value ?? []
 }
 
 export async function fetchProductBySlug(slug: string) {
