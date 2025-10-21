@@ -1,6 +1,13 @@
 import { ODataResponse, Product, Category } from './types'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5252'
+function getApiBase(): string {
+  const env = process.env.NEXT_PUBLIC_API_BASE_URL
+  if (env && env.trim()) return env
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+  return 'http://localhost:5252'
+}
 
 export async function fetchProducts(params?: {
   top?: number
@@ -12,7 +19,7 @@ export async function fetchProducts(params?: {
   if (params?.filter) parts.push(`$filter=${params.filter}`)
   if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
-  const url = `${API_BASE}/odata/Products${qs}`
+  const url = `${getApiBase()}/odata/Products${qs}`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`)
   return res.json()
@@ -26,14 +33,14 @@ export async function fetchCategories(params?: {
   if (params?.top) parts.push(`$top=${params.top}`)
   if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
-  const url = `${API_BASE}/odata/Categories${qs}`
+  const url = `${getApiBase()}/odata/Categories${qs}`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new Error('Failed to fetch categories')
   return res.json()
 }
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
-  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`
+  const url = `${getApiBase()}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Product>
@@ -57,7 +64,7 @@ export type Price = {
 }
 
 export async function fetchFirstPriceForProduct(productId: string): Promise<Price | null> {
-  const url = `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`
+  const url = `${getApiBase()}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Price>
@@ -76,7 +83,7 @@ export type ProductImage = {
 }
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
-  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const url = `${getApiBase()}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<ProductImage>
@@ -84,7 +91,7 @@ export async function fetchFirstImageForProduct(productId: string): Promise<Prod
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
-  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const url = `${getApiBase()}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return []
   const data = (await res.json()) as ODataResponse<ProductImage>
@@ -92,7 +99,7 @@ export async function fetchImagesForProduct(productId: string): Promise<ProductI
 }
 
 export async function fetchProductBySlug(slug: string) {
-  const url = `${API_BASE}/odata/Products?$top=1&$filter=Slug eq '${slug.replace(/'/g, "''")}'`
+  const url = `${getApiBase()}/odata/Products?$top=1&$filter=Slug eq '${slug.replace(/'/g, "''")}'`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new Error('Failed to fetch product')
   const data = (await res.json()) as ODataResponse<Product>
@@ -110,7 +117,7 @@ export async function searchProducts(q: string, top: number = 8): Promise<ODataR
   const term = q.trim().toLowerCase().replace(/'/g, "''")
   if (!term) return { value: [] }
   const filter = `contains(tolower(Title),'${term}') or contains(tolower(Subtitle),'${term}') or contains(tolower(Description),'${term}')`
-  const url = `${API_BASE}/odata/Products?$top=${top}&$filter=${encodeURIComponent(filter)}&$orderby=Created_At desc`
+  const url = `${getApiBase()}/odata/Products?$top=${top}&$filter=${encodeURIComponent(filter)}&$orderby=Created_At desc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return { value: [] }
   return res.json()

@@ -27,7 +27,7 @@ export function SortFilterBar({
       if (q !== value.q) onChange({ q })
     }, 250)
     return () => clearTimeout(t)
-  }, [q])
+  }, [q, value.q, onChange])
   return (
     <div className="rounded-2xl border border-sand bg-cream/70 backdrop-blur px-3 py-3 md:px-5 md:py-5 shadow-sm">
       <div className="flex flex-wrap items-stretch gap-3 md:gap-4">

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import { Product } from '../../lib/types'
@@ -29,7 +29,7 @@ export function FeaturedGrid({ initial }: { initial: Product[] }) {
       <MountReveal className="mb-8" y={10}>
         <AnimatedHeading>Featured</AnimatedHeading>
       </MountReveal>
-      {(!products || products.length === 0) ? (
+      {!products || products.length === 0 ? (
         <p className="text-brown/70">
           No products yet. Add products to your database to see them here.
         </p>
