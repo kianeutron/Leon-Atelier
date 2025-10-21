@@ -10,15 +10,9 @@ import { resolveImageUrl } from '../lib/images'
 import { useRef } from 'react'
 import Image from 'next/image'
 
-export function ProductCard(
-  {
-    product,
-    priority = false,
-  }: {
-    product: Product
-    priority?: boolean
-  }
-) {
+type ProductCardProps = { product: Product; priority?: boolean }
+
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const ref = useRef<HTMLDivElement | null>(null)
   const inView = useInView(ref, { amount: 0.2, once: true })
   const { data: price } = useQuery({
