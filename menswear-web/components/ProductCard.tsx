@@ -38,7 +38,7 @@ export function ProductCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.25 }}
-      className="group rounded-xl overflow-hidden bg-sand/40 border border-sand shadow-soft hover:shadow-xl"
+      className="group relative z-10 rounded-xl overflow-hidden bg-sand/40 border border-sand shadow-soft hover:shadow-xl"
     >
       <Link href={`/products/${product.Slug}`} className="block">
         <div className="relative w-full bg-sand/70" style={{ paddingTop: '125%' }}>
@@ -49,6 +49,7 @@ export function ProductCard({
               alt={image.Alt ?? product.Title}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
               decoding="async"
+              style={{ WebkitBackfaceVisibility: 'hidden', WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)', willChange: 'transform' }}
             />
           ) : (
             <div className="absolute inset-0" />
