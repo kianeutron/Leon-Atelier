@@ -92,7 +92,16 @@ export function Hero() {
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-y-0 right-0 w-[58%] md:w-[50%] lg:w-[52%] xl:w-[60%] overflow-hidden">
           <div className="relative h-full w-full">
-            {slides.map((s, i) => (
+            {slides.map((s, i) => {
+              // Build responsive srcSet from Mango's imwidth parameter
+              const base = s.img.split('?')[0]
+              const query = s.img.includes('?') ? s.img.split('?')[1] : ''
+              const widths = [480, 768, 1024, 1280, 1600]
+              const srcSet = widths
+                .map((w) => `${base}?imwidth=${w}${query ? `&${query.replace(/(^|&)imwidth=\d+/g, '').replace(/^&/, '')}` : ''} ${w}w`)
+                .join(', ')
+              const sizes = '(min-width: 1280px) 60vw, (min-width: 1024px) 52vw, (min-width: 768px) 50vw, 58vw'
+              return (
               <motion.img
                 key={i}
                 src={s.img}
@@ -100,7 +109,10 @@ export function Hero() {
                 className="absolute inset-0 h-full w-full object-cover select-none"
                 draggable={false}
                 loading={i === 0 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : 'auto'}
                 decoding="async"
+                srcSet={srcSet}
+                sizes={sizes}
                 initial={false}
                 animate={{
                   opacity: i === index ? 1 : 0,
@@ -113,7 +125,7 @@ export function Hero() {
                   maskImage: 'linear-gradient(to left, black 78%, transparent 100%)',
                 }}
               />
-            ))}
+            )})}
           </div>
           <div className="absolute inset-0 bg-gradient-to-l from-cream/30 via-transparent to-transparent" />
         </div>
