@@ -15,12 +15,10 @@ export function ProductCard({ product }: { product: Product }) {
   const { data: price } = useQuery({
     queryKey: ['price', product.Id],
     queryFn: () => fetchFirstPriceForProduct(product.Id),
-    enabled: inView,
   })
   const { data: image } = useQuery({
     queryKey: ['product-image', product.Id],
     queryFn: () => fetchFirstImageForProduct(product.Id),
-    enabled: inView,
   })
   return (
     <motion.div
