@@ -4,27 +4,7 @@ import { motion } from 'framer-motion'
 import { Instagram, Twitter, Mail } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export function Hero() {
-  const slides = [
-    {
-      title: 'Camel Trench',
-      price: 260,
-      compareAt: 320,
-      img: 'https://shop.mango.com/assets/rcs/pics/static/T1/fotos/outfit/S/17098265_96-99999999_01.jpg?imwidth=2048&imdensity=1&ts=1759746888972',
-    },
-    {
-      title: 'Gray Coat',
-      price: 150,
-      compareAt: 250,
-      img: 'https://shop.mango.com/assets/rcs/pics/static/T1/fotos_alt/S/17027887_17_01.jpg?imwidth=2048&imdensity=1&ts=1760548370000',
-    },
-    {
-      title: 'Wool Overcoat',
-      price: 220,
-      compareAt: 280,
-      img: 'https://shop.mango.com/assets/rcs/pics/static/T1/fotos/S/17095999_01.jpg?imwidth=2048&imdensity=1&ts=1759746888972',
-    },
-  ]
+export function Hero({ slides }: { slides: { title: string; img: string }[] }) {
   const [index, setIndex] = useState(0)
   const [paused] = useState(false)
   const progressRef = useRef<HTMLDivElement | null>(null)
@@ -98,34 +78,39 @@ export function Hero() {
               const query = s.img.includes('?') ? s.img.split('?')[1] : ''
               const widths = [480, 768, 1024, 1280, 1600]
               const srcSet = widths
-                .map((w) => `${base}?imwidth=${w}${query ? `&${query.replace(/(^|&)imwidth=\d+/g, '').replace(/^&/, '')}` : ''} ${w}w`)
+                .map(
+                  (w) =>
+                    `${base}?imwidth=${w}${query ? `&${query.replace(/(^|&)imwidth=\d+/g, '').replace(/^&/, '')}` : ''} ${w}w`
+                )
                 .join(', ')
-              const sizes = '(min-width: 1280px) 60vw, (min-width: 1024px) 52vw, (min-width: 768px) 50vw, 58vw'
+              const sizes =
+                '(min-width: 1280px) 60vw, (min-width: 1024px) 52vw, (min-width: 768px) 50vw, 58vw'
               return (
-              <motion.img
-                key={i}
-                src={s.img}
-                alt={s.title}
-                className="absolute inset-0 h-full w-full object-cover select-none"
-                draggable={false}
-                loading={i === 0 ? 'eager' : 'lazy'}
-                fetchPriority={i === 0 ? 'high' : 'auto'}
-                decoding="async"
-                srcSet={srcSet}
-                sizes={sizes}
-                initial={false}
-                animate={{
-                  opacity: i === index ? 1 : 0,
-                  scale: i === index ? 1 : 1.02,
-                  x: i === index ? 0 : -6,
-                }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                style={{
-                  WebkitMaskImage: 'linear-gradient(to left, black 78%, transparent 100%)',
-                  maskImage: 'linear-gradient(to left, black 78%, transparent 100%)',
-                }}
-              />
-            )})}
+                <motion.img
+                  key={i}
+                  src={s.img}
+                  alt={s.title}
+                  className="absolute inset-0 h-full w-full object-cover select-none"
+                  draggable={false}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={i === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                  srcSet={srcSet}
+                  sizes={sizes}
+                  initial={false}
+                  animate={{
+                    opacity: i === index ? 1 : 0,
+                    scale: i === index ? 1 : 1.02,
+                    x: i === index ? 0 : -6,
+                  }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  style={{
+                    WebkitMaskImage: 'linear-gradient(to left, black 78%, transparent 100%)',
+                    maskImage: 'linear-gradient(to left, black 78%, transparent 100%)',
+                  }}
+                />
+              )
+            })}
           </div>
           <div className="absolute inset-0 bg-gradient-to-l from-cream/30 via-transparent to-transparent" />
         </div>

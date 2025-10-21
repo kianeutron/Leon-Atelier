@@ -5,6 +5,7 @@ import {
   fetchCategories,
   fetchCategoryCover,
 } from '../lib/api'
+import { resolveImageUrl } from '../lib/images'
 import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
 import { Marquee } from '../components/home/Marquee'
@@ -30,6 +31,9 @@ export default async function HomePage() {
       return { product: p, price, image }
     })
   )
+  const heroSlides = detailed
+    .slice(0, 3)
+    .map((d) => ({ title: d.product.Title, img: d.image ? resolveImageUrl(d.image) : '' }))
   // SSR prefetch categories and their covers to speed up "Shop by Category"
   const categoriesData = await fetchCategories({ orderby: 'Name asc' }).catch(() => ({
     value: [] as any[],
@@ -44,7 +48,7 @@ export default async function HomePage() {
   const initialCovers = Object.fromEntries(coverEntries) as Record<string, string | null>
   return (
     <div>
-      <Hero />
+      <Hero slides={heroSlides} />
       <ScrollReveal>
         <Marquee />
       </ScrollReveal>
