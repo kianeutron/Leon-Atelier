@@ -10,8 +10,8 @@ export async function fetchProducts(params?: {
 }): Promise<ODataResponse<Product>> {
   const parts: string[] = []
   if (params?.top) parts.push(`$top=${params.top}`)
-  if (params?.filter) parts.push(`$filter=${encodeURIComponent(params.filter)}`)
-  if (params?.orderby) parts.push(`$orderby=${encodeURIComponent(params.orderby)}`)
+  if (params?.filter) parts.push(`$filter=${params.filter}`)
+  if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
   const url = `${API_BASE}/odata/Products${qs}`
   const res = await fetch(
@@ -42,9 +42,7 @@ export async function fetchCategories(params?: {
 }
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
-  const filter = encodeURIComponent(`CategoryId eq guid'${categoryId}' and Active eq true`)
-  const orderby = encodeURIComponent('Updated_At desc')
-  const url = `${API_BASE}/odata/Products?$top=1&$filter=${filter}&$orderby=${orderby}`
+  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Product>
@@ -69,8 +67,8 @@ export type Price = {
 
 export async function fetchFirstPriceForProduct(productId: string): Promise<Price | null> {
   const urls = [
-    `${API_BASE}/odata/Prices?$top=1&$filter=${encodeURIComponent(`ProductId eq guid'${productId}'`)}`,
-    `${API_BASE}/odata/Prices?$top=1&$filter=${encodeURIComponent(`ProductId eq ${productId}`)}`,
+    `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq guid'${productId}'`,
+    `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`,
   ]
   for (const u of urls) {
     const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
@@ -95,8 +93,8 @@ export type ProductImage = {
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
   const urls = [
-    `${API_BASE}/odata/ProductImages?$top=1&$filter=${encodeURIComponent(`ProductId eq guid'${productId}'`)}&$orderby=${encodeURIComponent('Position asc')}`,
-    `${API_BASE}/odata/ProductImages?$top=1&$filter=${encodeURIComponent(`ProductId eq ${productId}`)}&$orderby=${encodeURIComponent('Position asc')}`,
+    `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`,
   ]
   for (const u of urls) {
     const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
@@ -110,8 +108,8 @@ export async function fetchFirstImageForProduct(productId: string): Promise<Prod
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
   const urls = [
-    `${API_BASE}/odata/ProductImages?$filter=${encodeURIComponent(`ProductId eq guid'${productId}'`)}&$orderby=${encodeURIComponent('Position asc')}`,
-    `${API_BASE}/odata/ProductImages?$filter=${encodeURIComponent(`ProductId eq ${productId}`)}&$orderby=${encodeURIComponent('Position asc')}`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`,
   ]
   for (const u of urls) {
     const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
