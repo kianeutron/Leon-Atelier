@@ -1,4 +1,10 @@
-import { fetchProducts, fetchFirstPriceForProduct, fetchFirstImageForProduct, fetchCategories, fetchCategoryCover } from '../lib/api'
+import {
+  fetchProducts,
+  fetchFirstPriceForProduct,
+  fetchFirstImageForProduct,
+  fetchCategories,
+  fetchCategoryCover,
+} from '../lib/api'
 import { ProductCard } from '../components/ProductCard'
 import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
