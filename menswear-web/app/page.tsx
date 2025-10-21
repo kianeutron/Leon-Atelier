@@ -16,7 +16,6 @@ export default async function HomePage() {
     top: 6,
     filter: 'Active eq true',
     orderby: 'Created_At desc',
-    revalidateSeconds: 60,
   }).catch(() => ({ value: [] }))
   return (
     <div>
@@ -40,9 +39,9 @@ export default async function HomePage() {
           </p>
         ) : (
           <MountStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {data.value.map((p, i) => (
+            {data.value.map((p) => (
               <MountFadeUp key={p.Id}>
-                <ProductCard product={p} priority={i < 3} />
+                <ProductCard product={p} />
               </MountFadeUp>
             ))}
           </MountStagger>

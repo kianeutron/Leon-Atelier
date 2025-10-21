@@ -57,7 +57,7 @@ export default function SupportChat() {
   }
 
   return (
-    <div className="fixed right-4 bottom-32 md:bottom-4 z-40">
+    <div className="fixed right-4 bottom-24 md:bottom-4 z-40">
       {open && (
         <div className="mb-3 w-[92vw] max-w-sm rounded-2xl border border-sand bg-cream shadow-xl">
           <div className="flex items-center justify-between px-4 py-3 border-b border-sand">

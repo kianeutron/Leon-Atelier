@@ -1,5 +1,4 @@
 import { ODataResponse, Product, Category } from './types'
-import { resolveImageUrl } from './images'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5252'
 
@@ -7,7 +6,6 @@ export async function fetchProducts(params?: {
   top?: number
   filter?: string
   orderby?: string
-  revalidateSeconds?: number
 }): Promise<ODataResponse<Product>> {
   const parts: string[] = []
   if (params?.top) parts.push(`$top=${params.top}`)
@@ -15,15 +13,7 @@ export async function fetchProducts(params?: {
   if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
   const url = `${API_BASE}/odata/Products${qs}`
-  const res = await fetch(
-    url,
-    params?.revalidateSeconds
-      ? {
-          cache: 'force-cache',
-          next: { revalidate: params.revalidateSeconds } as any,
-        }
-      : { cache: 'no-store' }
-  )
+  const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`)
   return res.json()
 }
@@ -44,20 +34,17 @@ export async function fetchCategories(params?: {
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
   const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`
-  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
+  const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Product>
-  return data.value?.[0] ?? null
+  return data.value[0] ?? null
 }
 
 export async function fetchCategoryCover(categoryId: string): Promise<{ imageUrl: string | null }> {
   const prod = await fetchFirstProductForCategory(categoryId)
   if (!prod) return { imageUrl: null }
   const img = await fetchFirstImageForProduct(prod.Id)
-  if (img) return { imageUrl: resolveImageUrl(img) }
-  const list = await fetchImagesForProduct(prod.Id)
-  if (list.length) return { imageUrl: resolveImageUrl(list[0]) }
-  return { imageUrl: null }
+  return { imageUrl: img?.Url ?? null }
 }
 
 export type Price = {
@@ -70,18 +57,11 @@ export type Price = {
 }
 
 export async function fetchFirstPriceForProduct(productId: string): Promise<Price | null> {
-  const candidates = [
-    `${API_BASE}/odata/Prices?$filter=ProductId eq ${productId}`,
-    `${API_BASE}/odata/Prices?$filter=ProductId eq guid'${productId}'`,
-  ]
-  for (const u of candidates) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (!res.ok) continue
-    const data = (await res.json()) as ODataResponse<Price>
-    const items = (data.value ?? []).filter((p) => p.ProductId === productId)
-    if (items.length) return items[0]
-  }
-  return null
+  const url = `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`
+  const res = await fetch(url, { cache: 'no-store' })
+  if (!res.ok) return null
+  const data = (await res.json()) as ODataResponse<Price>
+  return data.value[0] ?? null
 }
 
 export type ProductImage = {
@@ -96,26 +76,19 @@ export type ProductImage = {
 }
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
-  const list = await fetchImagesForProduct(productId)
-  return list[0] ?? null
+  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const res = await fetch(url, { cache: 'no-store' })
+  if (!res.ok) return null
+  const data = (await res.json()) as ODataResponse<ProductImage>
+  return data.value[0] ?? null
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
-  const candidates = [
-    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`,
-    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
-  ]
-  for (const u of candidates) {
-    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
-    if (res.ok) {
-      const data = (await res.json()) as ODataResponse<ProductImage>
-      const items = (data.value ?? []).filter((img) => img.ProductId === productId)
-      if (items.length) {
-        return items.sort((a, b) => (a.Position ?? 0) - (b.Position ?? 0))
-      }
-    }
-  }
-  return []
+  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const res = await fetch(url, { cache: 'no-store' })
+  if (!res.ok) return []
+  const data = (await res.json()) as ODataResponse<ProductImage>
+  return data.value
 }
 
 export async function fetchProductBySlug(slug: string) {

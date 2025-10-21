@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { Instagram, Twitter, Mail, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function Hero() {
   const slides = [
@@ -40,12 +40,12 @@ export function Hero() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const next = useCallback(() => {
+  function next() {
     setIndex((p) => (p + 1) % slides.length)
-  }, [slides.length])
-  const prev = useCallback(() => {
+  }
+  function prev() {
     setIndex((p) => (p - 1 + slides.length) % slides.length)
-  }, [slides.length])
+  }
 
   useEffect(() => {
     let start = performance.now()
@@ -75,7 +75,7 @@ export function Hero() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [paused, index, next])
+  }, [paused, index])
 
   return (
     <section className="relative overflow-hidden">
