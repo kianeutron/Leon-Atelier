@@ -14,9 +14,14 @@ export async function fetchProducts(params?: {
   if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
   const url = `${API_BASE}/odata/Products${qs}`
-  const res = await fetch(url, params?.revalidateSeconds
-    ? { cache: 'force-cache', next: { revalidate: params.revalidateSeconds } as any }
-    : { cache: 'no-store' }
+  const res = await fetch(
+    url,
+    params?.revalidateSeconds
+      ? {
+          cache: 'force-cache',
+          next: { revalidate: params.revalidateSeconds } as any,
+        }
+      : { cache: 'no-store' }
   )
   if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`)
   return res.json()
