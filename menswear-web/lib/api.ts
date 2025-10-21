@@ -42,7 +42,7 @@ export async function fetchCategories(params?: {
 }
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
-  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`
+  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Product>
@@ -66,7 +66,7 @@ export type Price = {
 }
 
 export async function fetchFirstPriceForProduct(productId: string): Promise<Price | null> {
-  const url = `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq ${productId}`
+  const url = `${API_BASE}/odata/Prices?$top=1&$filter=ProductId eq guid'${productId}'`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<Price>
@@ -85,7 +85,7 @@ export type ProductImage = {
 }
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
-  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq guid'${productId}'&$orderby=Position asc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return null
   const data = (await res.json()) as ODataResponse<ProductImage>
@@ -93,7 +93,7 @@ export async function fetchFirstImageForProduct(productId: string): Promise<Prod
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
-  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`
+  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) return []
   const data = (await res.json()) as ODataResponse<ProductImage>
