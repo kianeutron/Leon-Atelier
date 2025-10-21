@@ -14,7 +14,11 @@ export function ProductCard({
   product,
   price: prefetchedPrice,
   image: prefetchedImage,
-}: { product: Product; price?: Price | null; image?: ProductImage | null }) {
+}: {
+  product: Product
+  price?: Price | null
+  image?: ProductImage | null
+}) {
   const ref = useRef<HTMLDivElement | null>(null)
   const inView = useInView(ref, { amount: 0.2, once: true })
   const { data: price } = useQuery({
