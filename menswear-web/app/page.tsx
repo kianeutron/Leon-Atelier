@@ -1,4 +1,4 @@
-import { fetchProducts } from '../lib/api'
+import { fetchProducts, fetchFirstPriceForProduct, fetchFirstImageForProduct } from '../lib/api'
 import { ProductCard } from '../components/ProductCard'
 import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
@@ -18,6 +18,15 @@ export default async function HomePage() {
     filter: 'Active eq true',
     orderby: 'Created_At desc',
   }).catch(() => ({ value: [] }))
+  const detailed = await Promise.all(
+    data.value.map(async (p) => {
+      const [price, image] = await Promise.all([
+        fetchFirstPriceForProduct(p.Id).catch(() => null),
+        fetchFirstImageForProduct(p.Id).catch(() => null),
+      ])
+      return { product: p, price, image }
+    })
+  )
   return (
     <div>
       <Hero />
@@ -30,7 +39,7 @@ export default async function HomePage() {
       <ScrollReveal delay={0.1}>
         <EditorialSplit />
       </ScrollReveal>
-      <FeaturedGrid initial={data.value} />
+      <FeaturedGrid initial={data.value} initialDetailed={detailed} />
       <ScrollReveal delay={0.05}>
         <EditorialDark />
       </ScrollReveal>

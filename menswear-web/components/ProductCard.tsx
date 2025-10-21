@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion'
 import { Product } from '../lib/types'
+import type { Price, ProductImage } from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import { fetchFirstPriceForProduct, fetchFirstImageForProduct } from '../lib/api'
 import { formatMoney } from '../lib/format'
@@ -9,16 +10,22 @@ import Link from 'next/link'
 import { resolveImageUrl } from '../lib/images'
 import { useRef } from 'react'
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  price: prefetchedPrice,
+  image: prefetchedImage,
+}: { product: Product; price?: Price | null; image?: ProductImage | null }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const inView = useInView(ref, { amount: 0.2, once: true })
   const { data: price } = useQuery({
     queryKey: ['price', product.Id],
     queryFn: () => fetchFirstPriceForProduct(product.Id),
+    initialData: prefetchedPrice,
   })
   const { data: image } = useQuery({
     queryKey: ['product-image', product.Id],
     queryFn: () => fetchFirstImageForProduct(product.Id),
+    initialData: prefetchedImage,
   })
   return (
     <motion.div

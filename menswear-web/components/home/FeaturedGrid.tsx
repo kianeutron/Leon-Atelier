@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import { Product } from '../../lib/types'
+import type { Price, ProductImage } from '../../lib/api'
 import { fetchProducts } from '../../lib/api'
 import { AnimatedHeading } from '../AnimatedHeading'
 import { MountReveal, MountStagger, MountFadeUp } from '../MountReveal'
 import { ProductCard } from '../ProductCard'
 
-export function FeaturedGrid({ initial }: { initial: Product[] }) {
+export function FeaturedGrid({
+  initial,
+  initialDetailed,
+}: {
+  initial: Product[]
+  initialDetailed?: { product: Product; price: Price | null; image: ProductImage | null }[]
+}) {
   const [products, setProducts] = useState<Product[]>(initial)
 
   useEffect(() => {
@@ -34,9 +41,12 @@ export function FeaturedGrid({ initial }: { initial: Product[] }) {
         </p>
       ) : (
         <MountStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((p) => (
-            <MountFadeUp key={p.Id}>
-              <ProductCard product={p} />
+          {(initialDetailed && initialDetailed.length === products.length
+            ? initialDetailed
+            : products.map((p) => ({ product: p, price: null, image: null }))
+          ).map((item) => (
+            <MountFadeUp key={item.product.Id}>
+              <ProductCard product={item.product} price={item.price} image={item.image} />
             </MountFadeUp>
           ))}
         </MountStagger>
