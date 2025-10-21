@@ -39,7 +39,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <Link href={`/products/${product.Slug}`} className="block">
         {image ? (
           <Image
-            src={`/api/img?u=${encodeURIComponent(resolveImageUrl(image))}`}
+            src={`/api/img?u=${encodeURIComponent(resolveImageUrl(image))}&p=${encodeURIComponent(product.Id)}`}
             alt={image.Alt ?? product.Title}
             width={800}
             height={1000}

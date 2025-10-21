@@ -89,11 +89,8 @@ export type ProductImage = {
 }
 
 export async function fetchFirstImageForProduct(productId: string): Promise<ProductImage | null> {
-  const url = `${API_BASE}/odata/ProductImages?$top=1&$filter=ProductId eq ${productId} and (Url ne null or StoragePath ne null)&$orderby=Position asc`
-  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
-  if (!res.ok) return null
-  const data = (await res.json()) as ODataResponse<ProductImage>
-  return data.value?.[0] ?? null
+  const list = await fetchImagesForProduct(productId)
+  return list[0] ?? null
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
