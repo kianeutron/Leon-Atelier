@@ -6,6 +6,7 @@ import { AddToCartButton } from './AddToCartButton'
 import { Heart } from 'lucide-react'
 import { useWishlist } from '../store/wishlist'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function ProductDetailClient({
   productId,
@@ -29,6 +30,16 @@ export function ProductDetailClient({
   const [qty, setQty] = useState(1)
   const { add, remove, has } = useWishlist()
   const wished = has(productId)
+
+  function toImg(u?: string) {
+    if (!u) return undefined
+    try {
+      // Proxy through local API to ensure HTTPS/CORS/cache
+      return `/api/img?u=${encodeURIComponent(u)}`
+    } catch {
+      return u
+    }
+  }
 
   return (
     <section className="relative">
@@ -63,11 +74,14 @@ export function ProductDetailClient({
         {/* Gallery */}
         <div>
           <div className="relative overflow-hidden rounded-2xl border border-sand bg-cream/60 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             {activeImg ? (
-              <img
-                src={activeImg}
+              <Image
+                src={toImg(activeImg) as string}
                 alt={title}
+                width={1200}
+                height={1600}
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full aspect-[4/5] md:aspect-[3/4] object-cover transition-transform duration-300 hover:scale-[1.02]"
               />
             ) : (
@@ -85,8 +99,15 @@ export function ProductDetailClient({
                 onClick={() => setActiveImg(u)}
                 className={`relative overflow-hidden rounded-xl border ${activeImg === u ? 'border-brown' : 'border-sand'} bg-cream/70 hover:border-brown transition`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={u} alt="thumb" className="w-full aspect-square object-cover" />
+                <Image
+                  src={toImg(u) as string}
+                  alt="thumb"
+                  width={300}
+                  height={300}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 30vw, 15vw"
+                  className="w-full aspect-square object-cover"
+                />
               </button>
             ))}
           </div>

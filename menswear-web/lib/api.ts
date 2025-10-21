@@ -6,6 +6,7 @@ export async function fetchProducts(params?: {
   top?: number
   filter?: string
   orderby?: string
+  revalidateSeconds?: number
 }): Promise<ODataResponse<Product>> {
   const parts: string[] = []
   if (params?.top) parts.push(`$top=${params.top}`)
@@ -13,7 +14,10 @@ export async function fetchProducts(params?: {
   if (params?.orderby) parts.push(`$orderby=${params.orderby}`)
   const qs = parts.length ? `?${parts.join('&')}` : ''
   const url = `${API_BASE}/odata/Products${qs}`
-  const res = await fetch(url, { cache: 'no-store' })
+  const res = await fetch(url, params?.revalidateSeconds
+    ? { cache: 'force-cache', next: { revalidate: params.revalidateSeconds } as any }
+    : { cache: 'no-store' }
+  )
   if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`)
   return res.json()
 }

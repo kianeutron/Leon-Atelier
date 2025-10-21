@@ -8,8 +8,9 @@ import { formatMoney } from '../lib/format'
 import Link from 'next/link'
 import { resolveImageUrl } from '../lib/images'
 import { useRef } from 'react'
+import Image from 'next/image'
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const inView = useInView(ref, { amount: 0.2, once: true })
   const { data: price } = useQuery({
@@ -35,10 +36,16 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <Link href={`/products/${product.Slug}`} className="block">
         {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={resolveImageUrl(image)}
+          <Image
+            src={`/api/img?u=${encodeURIComponent(resolveImageUrl(image))}`}
             alt={image.Alt ?? product.Title}
+            width={800}
+            height={1000}
+            loading={priority ? undefined : 'lazy'}
+            priority={priority}
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nODAwJyBoZWlnaHQ9JzEwMDAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nI0VERTNFOCcvPjwvc3ZnPg=="
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
             className="aspect-[4/5] w-full object-cover bg-sand/70 transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
