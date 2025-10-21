@@ -94,11 +94,22 @@ export async function fetchFirstImageForProduct(productId: string): Promise<Prod
 }
 
 export async function fetchImagesForProduct(productId: string): Promise<ProductImage[]> {
-  const url = `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}' and (Url ne null or StoragePath ne null)&$orderby=Position asc`
-  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } as any })
-  if (!res.ok) return []
-  const data = (await res.json()) as ODataResponse<ProductImage>
-  return data.value ?? []
+  const candidates = [
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId} and (Url ne null or StoragePath ne null)&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}' and (Url ne null or StoragePath ne null)&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'&$orderby=Position asc`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq ${productId}`,
+    `${API_BASE}/odata/ProductImages?$filter=ProductId eq guid'${productId}'`,
+  ]
+  for (const u of candidates) {
+    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
+    if (res.ok) {
+      const data = (await res.json()) as ODataResponse<ProductImage>
+      if (data.value && data.value.length) return data.value
+    }
+  }
+  return []
 }
 
 export async function fetchProductBySlug(slug: string) {
