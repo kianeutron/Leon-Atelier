@@ -1,4 +1,5 @@
 import { ODataResponse, Product, Category } from './types'
+import { resolveImageUrl } from './images'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5252'
 
@@ -53,7 +54,10 @@ export async function fetchCategoryCover(categoryId: string): Promise<{ imageUrl
   const prod = await fetchFirstProductForCategory(categoryId)
   if (!prod) return { imageUrl: null }
   const img = await fetchFirstImageForProduct(prod.Id)
-  return { imageUrl: img?.Url ?? null }
+  if (img) return { imageUrl: resolveImageUrl(img) }
+  const list = await fetchImagesForProduct(prod.Id)
+  if (list.length) return { imageUrl: resolveImageUrl(list[0]) }
+  return { imageUrl: null }
 }
 
 export type Price = {
