@@ -42,11 +42,18 @@ export async function fetchCategories(params?: {
 }
 
 export async function fetchFirstProductForCategory(categoryId: string): Promise<Product | null> {
-  const url = `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`
-  const res = await fetch(url, { cache: 'no-store' })
-  if (!res.ok) return null
-  const data = (await res.json()) as ODataResponse<Product>
-  return data.value[0] ?? null
+  const urls = [
+    `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq guid'${categoryId}' and Active eq true&$orderby=Updated_At desc`,
+    `${API_BASE}/odata/Products?$top=1&$filter=CategoryId eq ${categoryId} and Active eq true&$orderby=Updated_At desc`,
+  ]
+  for (const u of urls) {
+    const res = await fetch(u, { cache: 'force-cache', next: { revalidate: 60 } as any })
+    if (res.ok) {
+      const data = (await res.json()) as ODataResponse<Product>
+      if (data.value && data.value.length) return data.value[0]
+    }
+  }
+  return null
 }
 
 export async function fetchCategoryCover(categoryId: string): Promise<{ imageUrl: string | null }> {
