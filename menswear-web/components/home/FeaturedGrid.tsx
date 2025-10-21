@@ -12,13 +12,12 @@ export function FeaturedGrid({ initial }: { initial: Product[] }) {
 
   useEffect(() => {
     let cancelled = false
-    if (!initial || initial.length === 0) {
-      fetchProducts({ top: 6, filter: 'Active eq true', orderby: 'Created_At desc' })
-        .then((d) => {
-          if (!cancelled) setProducts(d.value)
-        })
-        .catch(() => {})
-    }
+    // Always fetch on mount to guarantee population on mobile first load
+    fetchProducts({ top: 6, filter: 'Active eq true', orderby: 'Created_At desc' })
+      .then((d) => {
+        if (!cancelled) setProducts(d.value)
+      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
