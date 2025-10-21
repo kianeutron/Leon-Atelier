@@ -6,7 +6,7 @@ export async function GET(req: NextRequest, { params }: { params: { path: string
   const target = `${API_BASE}/odata/${params.path.join('/')}${req.nextUrl.search}`
   const res = await fetch(target, {
     headers: {
-      'accept': 'application/json',
+      accept: 'application/json',
     },
     cache: 'no-store',
   })
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: { path: strin
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'accept': 'application/json',
+      accept: 'application/json',
     },
     body: await req.text(),
     cache: 'no-store',
