@@ -49,7 +49,12 @@ export function ProductCard({
               alt={image.Alt ?? product.Title}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
               decoding="async"
-              style={{ WebkitBackfaceVisibility: 'hidden', WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)', willChange: 'transform' }}
+              style={{
+                WebkitBackfaceVisibility: 'hidden',
+                WebkitTransform: 'translateZ(0)',
+                transform: 'translateZ(0)',
+                willChange: 'transform',
+              }}
             />
           ) : (
             <div className="absolute inset-0" />
