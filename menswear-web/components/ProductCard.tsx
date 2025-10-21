@@ -39,19 +39,21 @@ export function ProductCard({
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.25 }}
       className="group rounded-xl overflow-hidden bg-sand/40 border border-sand shadow-soft hover:shadow-xl"
-      style={{ transformStyle: 'preserve-3d' }}
     >
       <Link href={`/products/${product.Slug}`} className="block">
-        {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={resolveImageUrl(image)}
-            alt={image.Alt ?? product.Title}
-            className="aspect-[4/5] w-full object-cover bg-sand/70 transition-transform duration-500 group-hover:scale-[1.04]"
-          />
-        ) : (
-          <div className="aspect-[4/5] bg-sand/70" />
-        )}
+        <div className="relative w-full bg-sand/70" style={{ paddingTop: '125%' }}>
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={resolveImageUrl(image)}
+              alt={image.Alt ?? product.Title}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              decoding="async"
+            />
+          ) : (
+            <div className="absolute inset-0" />
+          )}
+        </div>
       </Link>
       <div className="p-4">
         <div className="flex items-center justify-between">
