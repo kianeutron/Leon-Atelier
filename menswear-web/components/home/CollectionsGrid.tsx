@@ -6,12 +6,19 @@ import { useEffect, useState } from 'react'
 import { Category } from '../../lib/types'
 import { fetchCategories, fetchCategoryCover } from '../../lib/api'
 
-export function CollectionsGrid() {
-  const [cats, setCats] = useState<Category[]>([])
-  const [covers, setCovers] = useState<Record<string, string | null>>({})
+export function CollectionsGrid({
+  initialCategories,
+  initialCovers,
+}: {
+  initialCategories?: Category[]
+  initialCovers?: Record<string, string | null>
+} = {}) {
+  const [cats, setCats] = useState<Category[]>(initialCategories ?? [])
+  const [covers, setCovers] = useState<Record<string, string | null>>(initialCovers ?? {})
   const loading = cats.length === 0
 
   useEffect(() => {
+    if (initialCategories && initialCategories.length) return
     let mounted = true
     ;(async () => {
       try {
@@ -19,7 +26,6 @@ export function CollectionsGrid() {
         if (!mounted) return
         const filtered = value.filter((c) => c.Slug !== 'tops')
         setCats(filtered)
-        // fetch representative image per category in parallel
         const entries = await Promise.all(
           filtered.map(async (c) => {
             const { imageUrl } = await fetchCategoryCover(c.Id)
@@ -33,7 +39,7 @@ export function CollectionsGrid() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [initialCategories])
 
   return (
     <section className="relative">

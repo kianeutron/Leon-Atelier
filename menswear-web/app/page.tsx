@@ -1,4 +1,4 @@
-import { fetchProducts, fetchFirstPriceForProduct, fetchFirstImageForProduct } from '../lib/api'
+import { fetchProducts, fetchFirstPriceForProduct, fetchFirstImageForProduct, fetchCategories, fetchCategoryCover } from '../lib/api'
 import { ProductCard } from '../components/ProductCard'
 import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
@@ -27,6 +27,17 @@ export default async function HomePage() {
       return { product: p, price, image }
     })
   )
+  // Prefetch categories and covers for "Shop by Category" to avoid client-side N+1 and speed up first paint
+  const catsData = await fetchCategories({ orderby: 'Name asc' }).catch(() => ({ value: [] }))
+  const initialCategories = catsData.value.filter((c) => c.Slug !== 'tops')
+  const coverEntries = await Promise.all(
+    initialCategories.map(async (c) => {
+      const { imageUrl } = await fetchCategoryCover(c.Id).catch(() => ({ imageUrl: null }))
+      return [c.Id, imageUrl] as const
+    })
+  )
+  const initialCovers = Object.fromEntries(coverEntries)
+
   return (
     <div>
       <Hero />
@@ -34,7 +45,7 @@ export default async function HomePage() {
         <Marquee />
       </ScrollReveal>
       <ScrollReveal delay={0.05}>
-        <CollectionsGrid />
+        <CollectionsGrid initialCategories={initialCategories} initialCovers={initialCovers} />
       </ScrollReveal>
       <ScrollReveal delay={0.1}>
         <EditorialSplit />
