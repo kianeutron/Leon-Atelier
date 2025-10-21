@@ -6,12 +6,19 @@ import { useEffect, useState } from 'react'
 import { Category } from '../../lib/types'
 import { fetchCategories, fetchCategoryCover } from '../../lib/api'
 
-export function CollectionsGrid() {
-  const [cats, setCats] = useState<Category[]>([])
-  const [covers, setCovers] = useState<Record<string, string | null>>({})
+export function CollectionsGrid({
+  initialCats = [],
+  initialCovers = {},
+}: {
+  initialCats?: Category[]
+  initialCovers?: Record<string, string | null>
+}) {
+  const [cats, setCats] = useState<Category[]>(initialCats)
+  const [covers, setCovers] = useState<Record<string, string | null>>(initialCovers)
   const loading = cats.length === 0
 
   useEffect(() => {
+    if (initialCats.length && Object.keys(initialCovers).length) return
     let mounted = true
     ;(async () => {
       try {
@@ -19,7 +26,6 @@ export function CollectionsGrid() {
         if (!mounted) return
         const filtered = value.filter((c) => c.Slug !== 'tops')
         setCats(filtered)
-        // fetch representative image per category in parallel
         const entries = await Promise.all(
           filtered.map(async (c) => {
             const { imageUrl } = await fetchCategoryCover(c.Id)
@@ -33,7 +39,7 @@ export function CollectionsGrid() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [initialCats, initialCovers])
 
   return (
     <section className="relative">
@@ -67,12 +73,10 @@ export function CollectionsGrid() {
             >
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
                 whileHover={{ y: -8, rotateX: 1.2, rotateY: -1.2 }}
                 className="relative overflow-hidden rounded-2xl p-[1.4px] bg-gradient-to-br from-gold/40 via-transparent to-transparent shadow-[0_10px_30px_rgba(38,31,16,0.12)]"
-                style={{ transformStyle: 'preserve-3d' }}
               >
                 <div className="relative h-60 md:h-72 lg:h-80 w-full overflow-hidden rounded-[0.95rem] border border-sand/80 bg-cream/70 backdrop-blur-sm">
                   {loading ? (
