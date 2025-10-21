@@ -12,8 +12,8 @@ export type CartItem = {
 
 export type CartState = {
   items: CartItem[]
-  add: (item: Omit<CartItem, 'id'>) => void
-  remove: (id: string) => void
+  add: (_item: Omit<CartItem, 'id'>) => void
+  remove: (_id: string) => void
   clear: () => void
   totalCents: () => number
 }
@@ -21,7 +21,7 @@ export type CartState = {
 export const useCart = create<CartState>((set, get) => ({
   items: [],
   add: (item) => set((s) => ({ items: [...s.items, { id: crypto.randomUUID(), ...item }] })),
-  remove: (id) => set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
+  remove: (_id) => set((s) => ({ items: s.items.filter((i) => i.id !== _id) })),
   clear: () => set({ items: [] }),
   totalCents: () => get().items.reduce((a, i) => a + i.priceCents * i.qty, 0),
 }))

@@ -5,7 +5,6 @@ import {
   fetchCategories,
   fetchCategoryCover,
 } from '../lib/api'
-import { ProductCard } from '../components/ProductCard'
 import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
 import { Marquee } from '../components/home/Marquee'
@@ -14,9 +13,7 @@ import { EditorialSplit } from '../components/home/EditorialSplit'
 import { Testimonials } from '../components/home/Testimonials'
 import { Newsletter } from '../components/home/Newsletter'
 import { EditorialDark } from '../components/home/EditorialDark'
-import { AnimatedHeading } from '../components/AnimatedHeading'
 import { ScrollReveal } from '../components/ScrollReveal'
-import { MountReveal, MountStagger, MountFadeUp } from '../components/MountReveal'
 
 export default async function HomePage() {
   const data = await fetchProducts({

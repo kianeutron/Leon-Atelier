@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Product } from '../lib/types'
 import type { Price, ProductImage } from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
@@ -20,7 +20,6 @@ export function ProductCard({
   image?: ProductImage | null
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
-  const inView = useInView(ref, { amount: 0.2, once: true })
   const { data: price } = useQuery({
     queryKey: ['price', product.Id],
     queryFn: () => fetchFirstPriceForProduct(product.Id),

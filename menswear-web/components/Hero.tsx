@@ -1,7 +1,7 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
-import { Instagram, Twitter, Mail, ChevronLeft, ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Instagram, Twitter, Mail } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function Hero() {
@@ -26,10 +26,8 @@ export function Hero() {
     },
   ]
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [paused] = useState(false)
   const progressRef = useRef<HTMLDivElement | null>(null)
-  const touchStartX = useRef<number | null>(null)
-  const active = slides[index]
 
   // Preload images once so browser cache is warm (no CORS needed for <img> requests)
   useEffect(() => {
@@ -42,9 +40,6 @@ export function Hero() {
 
   const next = useCallback(() => {
     setIndex((p) => (p + 1) % slides.length)
-  }, [slides.length])
-  const prev = useCallback(() => {
-    setIndex((p) => (p - 1 + slides.length) % slides.length)
   }, [slides.length])
 
   useEffect(() => {

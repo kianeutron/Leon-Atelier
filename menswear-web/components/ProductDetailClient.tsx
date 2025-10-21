@@ -27,7 +27,7 @@ export function ProductDetailClient({
   const [activeImg, setActiveImg] = useState(imageUrl ?? images?.[0])
   const [size, setSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
-  const { add, remove, has } = useWishlist()
+  const { add, has } = useWishlist()
   const wished = has(productId)
 
   return (

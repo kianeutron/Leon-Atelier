@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useUI } from '../store/ui'
-import { Menu, Search, ShoppingBag, Heart, User, X } from 'lucide-react'
+import { Menu, Search, Heart, User, X } from 'lucide-react'
 import { HeaderClient } from './HeaderClient'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'

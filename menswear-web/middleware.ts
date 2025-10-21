@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // Basic security headers. Tune CSP sources to your needs.
-export function middleware(req: NextRequest) {
+export function middleware(_req: NextRequest) {
   const res = NextResponse.next()
 
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5252'

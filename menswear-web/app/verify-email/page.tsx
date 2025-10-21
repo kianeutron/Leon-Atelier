@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import { Suspense, useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 export default function VerifyEmailPage() {
@@ -26,7 +26,6 @@ export default function VerifyEmailPage() {
 
 function VerifyEmailInner() {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const [status, setStatus] = useState<'idle' | 'verifying' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState<string>('')
 
@@ -37,7 +36,6 @@ function VerifyEmailInner() {
       setMessage('Missing verification token')
       return
     }
-    let cancelled = false
     async function run() {
       try {
         setStatus('verifying')
@@ -61,9 +59,7 @@ function VerifyEmailInner() {
       }
     }
     run()
-    return () => {
-      cancelled = true
-    }
+    return () => {}
   }, [searchParams])
 
   return (

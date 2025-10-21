@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import type { Category } from '../lib/types'
 
 export type SortKey = 'newest' | 'price_asc' | 'price_desc' | 'title'
@@ -16,7 +15,7 @@ export function SortFilterBar({
     categoryId: string
     sort: SortKey
   }
-  onChange: (v: Partial<typeof value>) => void
+  onChange: (_v: Partial<typeof value>) => void
   categories?: Category[]
 }) {
   const [q, setQ] = useState(value.q)

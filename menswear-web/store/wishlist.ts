@@ -9,9 +9,9 @@ export type WishlistItem = {
 
 export type WishlistState = {
   items: WishlistItem[]
-  add: (item: WishlistItem) => void
-  remove: (productId: string) => void
-  has: (productId: string) => boolean
+  add: (_item: WishlistItem) => void
+  remove: (_productId: string) => void
+  has: (_productId: string) => boolean
   clear: () => void
 }
 
@@ -22,8 +22,9 @@ export const useWishlist = create<WishlistState>((set, get) => ({
       if (s.items.some((i) => i.productId === item.productId)) return s
       return { items: [...s.items, item] }
     }),
-  remove: (productId) => set((s) => ({ items: s.items.filter((i) => i.productId !== productId) })),
-  has: (productId) => get().items.some((i) => i.productId === productId),
+  remove: (_productId) =>
+    set((s) => ({ items: s.items.filter((i) => i.productId !== _productId) })),
+  has: (_productId) => get().items.some((i) => i.productId === _productId),
   clear: () => set({ items: [] }),
 }))
 
