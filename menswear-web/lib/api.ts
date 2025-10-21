@@ -2,10 +2,17 @@ import { ODataResponse, Product, Category } from './types'
 
 function getApiBase(): string {
   const env = process.env.NEXT_PUBLIC_API_BASE_URL
-  if (env && env.trim()) return env
+  // In the browser, if served over http(s), use the Next API proxy to guarantee same-origin
   if (typeof window !== 'undefined') {
-    return window.location.origin
+    if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+      return '/api'
+    }
+    // Non-http scheme (e.g., Capacitor), prefer explicit env
+    if (env && env.trim()) return env
+    return 'http://localhost:5252'
   }
+  // On the server, prefer env; otherwise fallback
+  if (env && env.trim()) return env
   return 'http://localhost:5252'
 }
 
