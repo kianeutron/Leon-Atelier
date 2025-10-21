@@ -24,8 +24,7 @@ export function ProductCard({ product }: { product: Product }) {
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.25 }}
       className="group rounded-xl overflow-hidden bg-sand/40 border border-sand shadow-soft hover:shadow-xl"

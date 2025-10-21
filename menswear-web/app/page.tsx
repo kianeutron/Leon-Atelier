@@ -1,5 +1,6 @@
 import { fetchProducts } from '../lib/api'
 import { ProductCard } from '../components/ProductCard'
+import { FeaturedGrid } from '../components/home/FeaturedGrid'
 import { Hero } from '../components/Hero'
 import { Marquee } from '../components/home/Marquee'
 import { CollectionsGrid } from '../components/home/CollectionsGrid'
@@ -29,24 +30,7 @@ export default async function HomePage() {
       <ScrollReveal delay={0.1}>
         <EditorialSplit />
       </ScrollReveal>
-      <section id="shop" className="mx-auto max-w-6xl px-4 py-16">
-        <MountReveal className="mb-8" y={10}>
-          <AnimatedHeading>Featured</AnimatedHeading>
-        </MountReveal>
-        {data.value.length === 0 ? (
-          <p className="text-brown/70">
-            No products yet. Add products to your database to see them here.
-          </p>
-        ) : (
-          <MountStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {data.value.map((p) => (
-              <MountFadeUp key={p.Id}>
-                <ProductCard product={p} />
-              </MountFadeUp>
-            ))}
-          </MountStagger>
-        )}
-      </section>
+      <FeaturedGrid initial={data.value} />
       <ScrollReveal delay={0.05}>
         <EditorialDark />
       </ScrollReveal>
